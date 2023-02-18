@@ -12,10 +12,13 @@
         android:theme="@style/HiddenTitleTheme"
         tools:targetApi="31">
         <activity
-            android:name=".view.activity.LoginActivity"
+            android:name=".view.activity.CustomerPanelBottomActivity"
             android:exported="false" />
         <activity
             android:name=".view.activity.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".view.activity.ChooseOneActivity"

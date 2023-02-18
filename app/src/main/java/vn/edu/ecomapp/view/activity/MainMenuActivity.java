@@ -21,7 +21,7 @@ public class MainMenuActivity extends AppCompatActivity {
     ConstraintLayout constraintLayoutMainMenu;
 
 //    Animations
-     Animation zoomIn, zoomOut, move;
+     Animation zoomIn, zoomOut;
 
 
     @Override
