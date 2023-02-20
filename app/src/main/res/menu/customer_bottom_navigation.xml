@@ -10,6 +10,11 @@
        android:icon="@drawable/food"
        android:title="Food"
        />
+   <item
+       android:id="@+id/cart"
+       android:icon="@drawable/cart"
+       android:title="Cart"
+       />
     <item
         android:id="@+id/account"
         android:icon="@drawable/user"
