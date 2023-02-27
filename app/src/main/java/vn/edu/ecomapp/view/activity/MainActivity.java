@@ -1,7 +1,5 @@
 package vn.edu.ecomapp.view.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
@@ -12,10 +10,13 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.FirebaseApp;
+
 import vn.edu.ecomapp.R;
 
 public class MainActivity extends AppCompatActivity {
-    private final  String TAG = MainActivity.class.getName();
 
     ImageView imageView;
     TextView textViewDesignBy;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
         hiddenTitleBar();
         setContentView(R.layout.activity_main);
         initializeComponents();
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             Intent intent = new Intent(MainActivity.this, MainMenuActivity.class);
             startActivity(intent);
+            finish();
         }, delay);
     }
 

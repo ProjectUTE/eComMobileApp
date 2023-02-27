@@ -1,6 +1,7 @@
 package vn.edu.ecomapp.model;
 
 public class Product {
+
     private String id;
 	private String categoryId;
 	private String productName;

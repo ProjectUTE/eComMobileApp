@@ -16,7 +16,6 @@ import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.model.Product;
 
 public class PopularProductAdapter  extends RecyclerView.Adapter<PopularProductAdapter.ViewHolder> {
-
    Context context;
    List<Product> products;
 

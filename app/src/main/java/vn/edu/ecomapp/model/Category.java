@@ -3,8 +3,6 @@ package vn.edu.ecomapp.model;
 public class Category {
     String id, name;
 
-    public Category() {  }
-
     public String getId() {
         return id;
     }

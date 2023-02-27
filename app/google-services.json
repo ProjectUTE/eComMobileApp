@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "391601190790",
+    "project_id": "ecomappbe-e99b7",
+    "storage_bucket": "ecomappbe-e99b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391601190790:android:eb18cba13042df1d02de07",
+        "android_client_info": {
+          "package_name": "vn.edu.ecomapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391601190790-ve17hseocps85hcr8qm9ru4p8hm8mp87.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD52qo-x5YWX1J3hyrgRkUexK8N8RbtOo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391601190790-ve17hseocps85hcr8qm9ru4p8hm8mp87.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

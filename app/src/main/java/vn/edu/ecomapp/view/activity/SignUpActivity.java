@@ -1,10 +1,9 @@
 package vn.edu.ecomapp.view.activity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Message;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,26 +11,39 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import vn.edu.ecomapp.R;
+import vn.edu.ecomapp.util.AlertDialogMessage;
 
 public class SignUpActivity extends AppCompatActivity {
 
    TextView textViewAlreadyAccount;
    TextInputLayout editTextEmail, editTextPassword, editTextConfirmPassword;
    Button buttonSignUp;
-
    String email = "", password = "", confirmPassword = "";
+   FirebaseAuth firebaseAuth;
+   DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         this.initializeComponents();
+        this.initializeDatabase();
         this.handleTextViewClick();
         this.handleButtonSignUpClick();
+    }
+
+
+    private  void initializeDatabase() {
+        this.firebaseAuth = FirebaseAuth.getInstance();
+        this.databaseReference = FirebaseDatabase.getInstance("https://ecomappbe-e99b7-default-rtdb.asia-southeast1.firebasedatabase.app").getReference();
     }
 
     private void initializeComponents() {
@@ -50,6 +62,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+
     private void handleButtonSignUpClick() {
         this.buttonSignUp.setOnClickListener(view -> {
            email = Objects.requireNonNull(editTextEmail.getEditText()).getText().toString().trim();
@@ -61,23 +74,65 @@ public class SignUpActivity extends AppCompatActivity {
                progressDialog.setCancelable(false);
                progressDialog.setCanceledOnTouchOutside(false);
                progressDialog.setMessage("Registration in progress, please wait...");
-                progressDialog.show();
-                // Call API
-               CountDownTimer countDownTimer = new CountDownTimer(2000, 1000) {
-                   @Override
-                   public void onTick(long l) {
+               progressDialog.show();
 
-                   }
+              // Check email exist
+               firebaseAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(task -> {
+                   progressDialog.dismiss();
+                  if (Objects.requireNonNull(task.getResult().getSignInMethods()).size() == 0){
+                      // email not exits
+                      firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task1 -> {
+                          if(task1.isSuccessful()) {
+                              // Create User table
+                              String userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+                              final HashMap<String, String> hashMapUser = new HashMap<>();
+                              hashMapUser.put("role", "customer");
+                              databaseReference.child("Users").child(userId).setValue(hashMapUser).addOnCompleteListener(task2 -> {
+                                  if(task2.isSuccessful()) {
+                                      // Create customer table
+                                      final  HashMap<String, String> customerInfo = new HashMap<>();
+                                      customerInfo.put("email", email);
+                                      customerInfo.put("password", password);
+                                      databaseReference.child("Customers").child(userId).setValue(customerInfo).addOnCompleteListener(task3 -> {
+                                            if(task3.isSuccessful()) {
+                                                // Send email verification
+                                               firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(task4 -> {
+                                                    if(task4.isSuccessful())  {
+                                                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                                                        builder.setCancelable(false);
+                                                        builder.setTitle("Registration success");
+                                                        builder.setMessage("You have registered. Please, Verify your email to continue");
+                                                        builder.setPositiveButton("Ok", (dialogInterface, i) -> {
+                                                            dialogInterface.dismiss();
+                                                            // Switch to Login form
+                                                            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        });
+                                                        builder.create().show();
+                                                    } else {
+                                                        AlertDialogMessage.showAlertMessage(this, "Send email failed", Objects.requireNonNull(task4.getException()).getMessage());
+                                                    }
+                                               });
+                                            } else {
+                                                AlertDialogMessage.showAlertMessage(this, "Create customer failed", Objects.requireNonNull(task3.getException()).getMessage());
+                                            }
+                                      });
+                                  } else  {
+                                      AlertDialogMessage.showAlertMessage(this, "Create user failed", Objects.requireNonNull(task2.getException()).getMessage());
+                                  }
+                              });
+                          } else {
+                              AlertDialogMessage.showAlertMessage(this, "Authentication failed", Objects.requireNonNull(task1.getException()).getMessage());
+                          }
+                      });
+                  }else {
+                      // email exits
+                      AlertDialogMessage.
+                              showAlertMessage(this, "Registration failed!", "Email already exits. Please, choose another email");
+                  }
+               });
 
-                   @Override
-                   public void onFinish() {
-                       progressDialog.dismiss();
-                       Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                       startActivity(intent);
-                       finish();
-                   }
-               };
-               countDownTimer.start();
            }
         });
     }

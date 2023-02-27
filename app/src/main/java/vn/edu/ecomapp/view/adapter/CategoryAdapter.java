@@ -18,6 +18,7 @@ import vn.edu.ecomapp.model.Category;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
+
     Context context;
     List<Category> categories;
 
@@ -29,7 +30,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     @NonNull
     @Override
     public CategoryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(this.context).inflate(R.layout.list_category_item, parent, false);
+        View view = LayoutInflater.from(this.context).inflate(R.layout.list_category_item_horizontal, parent, false);
         return new ViewHolder(view);
     }
 
@@ -38,7 +39,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final  Category category = this.categories.get(position);
         holder.textViewTitle.setText((CharSequence) category.getName());
-        holder.imageViewBackground.setImageResource(R.drawable.title_home);
+        holder.imageViewBackground.setImageResource(R.drawable.coffee);
     }
 
     @Override

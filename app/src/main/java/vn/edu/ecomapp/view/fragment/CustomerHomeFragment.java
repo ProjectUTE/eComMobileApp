@@ -3,6 +3,7 @@ package vn.edu.ecomapp.view.fragment;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,7 +23,6 @@ import vn.edu.ecomapp.view.adapter.CategoryAdapter;
 import vn.edu.ecomapp.view.adapter.PopularProductAdapter;
 
 public class CustomerHomeFragment extends Fragment {
-
     List<Category> categories;
     List<Product> popularProducts;
     RecyclerView recyclerView, recyclerViewPopularProduct;
@@ -32,7 +32,6 @@ public class CustomerHomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_customer_home, null);
-        requireActivity().setTitle("Home");
         return  view;
     }
 
@@ -42,6 +41,30 @@ public class CustomerHomeFragment extends Fragment {
         initializeData();
        loadRecyclerViewCategory(view);
        loadRecyclerViewPopularProduct(view);
+       handleAddOnCategoryItemTouchListener();
+        handleAddOnPopularItemTouchListener();
+    }
+
+    private void handleAddOnPopularItemTouchListener() {
+        recyclerViewPopularProduct.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
+    }
+
+    private void handleAddOnCategoryItemTouchListener() {
     }
 
     private void loadRecyclerViewPopularProduct(View view) {
