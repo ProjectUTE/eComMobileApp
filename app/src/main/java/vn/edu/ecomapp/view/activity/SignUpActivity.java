@@ -5,8 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,7 +20,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import vn.edu.ecomapp.R;
+import vn.edu.ecomapp.api.LoginApi;
+import vn.edu.ecomapp.model.MessageDto;
+import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.util.AlertDialogMessage;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -29,6 +37,8 @@ public class SignUpActivity extends AppCompatActivity {
    String email = "", password = "", confirmPassword = "";
    FirebaseAuth firebaseAuth;
    DatabaseReference databaseReference;
+
+   LoginApi loginApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +54,7 @@ public class SignUpActivity extends AppCompatActivity {
     private  void initializeDatabase() {
         this.firebaseAuth = FirebaseAuth.getInstance();
         this.databaseReference = FirebaseDatabase.getInstance("https://ecomappbe-e99b7-default-rtdb.asia-southeast1.firebasedatabase.app").getReference();
+        loginApi = RetrofitClient.getRetrofit().create(LoginApi.class);
     }
 
     private void initializeComponents() {
@@ -64,87 +75,50 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private void handleButtonSignUpClick() {
-        this.buttonSignUp.setOnClickListener(view -> {
-           email = Objects.requireNonNull(editTextEmail.getEditText()).getText().toString().trim();
-           password = Objects.requireNonNull(editTextPassword.getEditText()).getText().toString();
-           confirmPassword = Objects.requireNonNull(editTextConfirmPassword.getEditText()).getText().toString();
+        this.buttonSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                email = Objects.requireNonNull(editTextEmail.getEditText()).getText().toString().trim();
+                password = Objects.requireNonNull(editTextPassword.getEditText()).getText().toString().trim();
+                confirmPassword = Objects.requireNonNull(editTextConfirmPassword.getEditText()).getText().toString().trim();
+                if(password.equals(confirmPassword)) {
+                    loginApi.createAccountUser(email, password).enqueue(new Callback<MessageDto>() {
+                        @Override
+                        public void onResponse(Call<MessageDto> call, Response<MessageDto> response) {
+                            AlertDialogMessage.showAlertMessage(SignUpActivity.this, response.body().getTitle(), response.body().getMessage());
+                            if(response.body().getStatus().equals("SUCCESS")) {
+                                Intent intent = new Intent(SignUpActivity.this, VerifyAccountActivity.class);
+                                intent.putExtra("email", email);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
 
-           if(isValid()) {
-               final ProgressDialog progressDialog = new ProgressDialog(SignUpActivity.this);
-               progressDialog.setCancelable(false);
-               progressDialog.setCanceledOnTouchOutside(false);
-               progressDialog.setMessage("Registration in progress, please wait...");
-               progressDialog.show();
-
-              // Check email exist
-               firebaseAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(task -> {
-                   progressDialog.dismiss();
-                  if (Objects.requireNonNull(task.getResult().getSignInMethods()).size() == 0){
-                      // email not exits
-                      firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task1 -> {
-                          if(task1.isSuccessful()) {
-                              // Create User table
-                              String userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
-                              final HashMap<String, String> hashMapUser = new HashMap<>();
-                              hashMapUser.put("role", "customer");
-                              databaseReference.child("Users").child(userId).setValue(hashMapUser).addOnCompleteListener(task2 -> {
-                                  if(task2.isSuccessful()) {
-                                      // Create customer table
-                                      final  HashMap<String, String> customerInfo = new HashMap<>();
-                                      customerInfo.put("email", email);
-                                      customerInfo.put("password", password);
-                                      databaseReference.child("Customers").child(userId).setValue(customerInfo).addOnCompleteListener(task3 -> {
-                                            if(task3.isSuccessful()) {
-                                                // Send email verification
-                                               firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(task4 -> {
-                                                    if(task4.isSuccessful())  {
-                                                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                                                        builder.setCancelable(false);
-                                                        builder.setTitle("Registration success");
-                                                        builder.setMessage("You have registered. Please, Verify your email to continue");
-                                                        builder.setPositiveButton("Ok", (dialogInterface, i) -> {
-                                                            dialogInterface.dismiss();
-                                                            // Switch to Login form
-                                                            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                                                            startActivity(intent);
-                                                            finish();
-                                                        });
-                                                        builder.create().show();
-                                                    } else {
-                                                        AlertDialogMessage.showAlertMessage(this, "Send email failed", Objects.requireNonNull(task4.getException()).getMessage());
-                                                    }
-                                               });
-                                            } else {
-                                                AlertDialogMessage.showAlertMessage(this, "Create customer failed", Objects.requireNonNull(task3.getException()).getMessage());
-                                            }
-                                      });
-                                  } else  {
-                                      AlertDialogMessage.showAlertMessage(this, "Create user failed", Objects.requireNonNull(task2.getException()).getMessage());
-                                  }
-                              });
-                          } else {
-                              AlertDialogMessage.showAlertMessage(this, "Authentication failed", Objects.requireNonNull(task1.getException()).getMessage());
-                          }
-                      });
-                  }else {
-                      // email exits
-                      AlertDialogMessage.
-                              showAlertMessage(this, "Registration failed!", "Email already exits. Please, choose another email");
-                  }
-               });
-
-           }
+                        @Override
+                        public void onFailure(Call<MessageDto> call, Throwable t) {
+                            AlertDialogMessage.showAlertMessage(SignUpActivity.this, "Sign Up Message", t.getMessage());
+//                            Intent intent = new Intent(SignUpActivity.this, VerifyAccountActivity.class);
+//                            intent.putExtra("email", email);
+//                            startActivity(intent);
+//                            finish();
+                        }
+                    });
+                } else {
+                    Toast.makeText(SignUpActivity.this, "Confirm the password needs to be the same as the password", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
     }
 
     private boolean isValid() {
-        String emailPattern = "[a-zA-Z\\d._-]+@[a-z]+\\.+[a-z]+";
+        String emailPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
         Objects.requireNonNull(editTextEmail).setError("");
         Objects.requireNonNull(editTextPassword).setError("");
-        Objects.requireNonNull(editTextConfirmPassword).setError("");
+//        Objects.requireNonNull(editTextConfirmPassword).setError("");
         editTextEmail.setErrorEnabled(false);
         editTextPassword.setErrorEnabled(false);
-        editTextConfirmPassword.setErrorEnabled(false);
+//        editTextConfirmPassword.setErrorEnabled(false);
         boolean isValidEmail = false, isValidPassword = false, isValidConfirmPassword = false;
 
         if(TextUtils.isEmpty(email)) {
@@ -171,18 +145,19 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }
 
-        if(TextUtils.isEmpty(confirmPassword)) {
-            editTextConfirmPassword.setErrorEnabled(true);
-            Objects.requireNonNull(editTextConfirmPassword.getEditText()).setError("Confirm password is required");
-        }
-        else {
-            if(!TextUtils.equals(password, confirmPassword)) {
-                editTextConfirmPassword.setErrorEnabled(true);
-                Objects.requireNonNull(editTextConfirmPassword.getEditText()).setError("Confirm password doesn't match");
-            } else {
-                isValidConfirmPassword = true;
-            }
-        }
-        return  isValidEmail && isValidPassword && isValidConfirmPassword;
+//        if(TextUtils.isEmpty(confirmPassword)) {
+//            editTextConfirmPassword.setErrorEnabled(true);
+//            Objects.requireNonNull(editTextConfirmPassword.getEditText()).setError("Confirm password is required");
+//        }
+//        else {
+//            if(!TextUtils.equals(password, confirmPassword)) {
+//                editTextConfirmPassword.setErrorEnabled(true);
+//                Objects.requireNonNull(editTextConfirmPassword.getEditText()).setError("Confirm password doesn't match");
+//            } else {
+//                isValidConfirmPassword = true;
+//            }
+//        }
+//        return  isValidEmail && isValidPassword && isValidConfirmPassword;
+        return  isValidEmail && isValidPassword;
     }
 }
