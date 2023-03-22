@@ -11,9 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
@@ -32,8 +29,6 @@ public class SignUpActivity extends AppCompatActivity {
    TextInputLayout editTextEmail, editTextPassword, editTextConfirmPassword;
    Button buttonSignUp;
    String email = "", password = "", confirmPassword = "";
-   FirebaseAuth firebaseAuth;
-   DatabaseReference databaseReference;
    LoginApi loginApi;
 
     @Override
@@ -48,8 +43,6 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private  void initializeDatabase() {
-        this.firebaseAuth = FirebaseAuth.getInstance();
-        this.databaseReference = FirebaseDatabase.getInstance("https://ecomappbe-e99b7-default-rtdb.asia-southeast1.firebasedatabase.app").getReference();
         loginApi = RetrofitClient.getRetrofit().create(LoginApi.class);
     }
 

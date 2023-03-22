@@ -1,22 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:title="Home"
         android:id="@+id/home"
         android:icon="@drawable/home"
         />
    <item
+       android:title="Food"
        android:id="@+id/food"
        android:icon="@drawable/food"
        />
    <item
+       android:enabled="false"
+       app:showAsAction="ifRoom"
+       android:title=""
        android:id="@+id/cart"
-       android:icon="@drawable/cart"
        />
     <item
+        android:title="Account"
         android:id="@+id/account"
         android:icon="@drawable/user"
         />
     <item
+        android:title="Settings"
         android:id="@+id/setting"
         android:icon="@drawable/settings"
         />

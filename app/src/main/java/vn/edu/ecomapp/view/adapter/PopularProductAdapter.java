@@ -16,10 +16,16 @@ import java.util.List;
 
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.model.Product;
+import vn.edu.ecomapp.view.adapter.listener.OnItemClickListener;
 
 public class PopularProductAdapter  extends RecyclerView.Adapter<PopularProductAdapter.ViewHolder> {
    Context context;
    List<Product> products;
+
+   private OnItemClickListener listener;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public PopularProductAdapter(Context context, List<Product> products) {
         this.context = context;
@@ -37,15 +43,17 @@ public class PopularProductAdapter  extends RecyclerView.Adapter<PopularProductA
     @Override
     public void onBindViewHolder(@NonNull PopularProductAdapter.ViewHolder holder, int position) {
         final Product product = this.products.get(position);
+        if (product == null) return;
         holder.textViewName.setText(product.getProductName());
         holder.textViewPrice.setText(String.format("%d", product.getNewPrice()));
-        if(position == getItemCount() - 1) {
-        }
+        holder.itemView.setOnClickListener(view -> listener.onItemClick(position, view));
     }
 
     @Override
     public int getItemCount() {
-        return this.products.size();
+        if(products != null)
+            return this.products.size();
+        return  0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

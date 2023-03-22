@@ -12,9 +12,21 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/HiddenTitleTheme"
+        android:theme="@style/Theme.EComApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".TrackingOderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CheckoutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.PanelActivity"
+            android:exported="false" />
         <activity
             android:name=".view.activity.VerifyAccountActivity"
             android:exported="false" />
@@ -23,9 +35,6 @@
             android:exported="false" />
         <activity
             android:name=".view.activity.ForgotPasswordActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.activity.CustomerPanelBottomActivity"
             android:exported="false" />
         <activity
             android:name=".view.activity.SignUpActivity"

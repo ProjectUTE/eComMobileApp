@@ -18,6 +18,7 @@ import java.util.List;
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.model.Category;
 import vn.edu.ecomapp.view.adapter.CategoryAdapter;
+import vn.edu.ecomapp.view.adapter.decorator.SpacesItemDecoration;
 
 public class CustomerFoodFragment  extends Fragment {
 
@@ -28,20 +29,20 @@ public class CustomerFoodFragment  extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeData();
-       loadRecyclerViewCategory(view);
+        loadRecyclerViewCategory(view);
     }
 
     private void loadRecyclerViewCategory(View view) {
-       recyclerViewCategories = view.findViewById(R.id.recycler_view_category);
+        recyclerViewCategories = view.findViewById(R.id.recyclerViewCategories);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewCategories.setLayoutManager(linearLayoutManager);
-        recyclerViewCategories.setHasFixedSize(true);
         CategoryAdapter categoryAdapter = new CategoryAdapter(getContext(), categories);
         recyclerViewCategories.setAdapter(categoryAdapter);
+        recyclerViewCategories.addItemDecoration(new SpacesItemDecoration(40));
     }
 
     private void initializeData() {
-      categories = new ArrayList<>();
+        categories = new ArrayList<>();
         categories.add(new Category("1", "Coffee"));
         categories.add(new Category("2", "Drinks"));
         categories.add(new Category("3", "Cakes"));

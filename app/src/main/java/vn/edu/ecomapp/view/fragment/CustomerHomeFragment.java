@@ -1,6 +1,7 @@
 package vn.edu.ecomapp.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,9 +27,11 @@ import vn.edu.ecomapp.api.ProductApi;
 import vn.edu.ecomapp.model.Category;
 import vn.edu.ecomapp.model.Product;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
+import vn.edu.ecomapp.view.activity.ProductDetailActivity;
 import vn.edu.ecomapp.view.adapter.CategoryAdapter;
 import vn.edu.ecomapp.view.adapter.PopularProductAdapter;
 import vn.edu.ecomapp.view.adapter.decorator.SpacesItemDecoration;
+import vn.edu.ecomapp.view.adapter.listener.OnItemClickListener;
 
 public class CustomerHomeFragment extends Fragment{
 
@@ -59,15 +62,8 @@ public class CustomerHomeFragment extends Fragment{
         initApi();
         loadCategories(view);
         loadPopularProducts(view);
-        handleAddOnCategoryItemTouchListener();
-        handleAddOnPopularItemTouchListener();
     }
 
-    private void handleAddOnPopularItemTouchListener() {
-    }
-
-    private void handleAddOnCategoryItemTouchListener() {
-    }
 
     private void loadPopularProducts(View view) {
         recyclerViewPopularProduct = view.findViewById(R.id.recycler_view_popular_product);
@@ -76,6 +72,13 @@ public class CustomerHomeFragment extends Fragment{
         PopularProductAdapter popularProductAdapter = new PopularProductAdapter(getContext(), this.popularProducts);
         recyclerViewPopularProduct.setAdapter(popularProductAdapter);
         recyclerViewPopularProduct.addItemDecoration(new SpacesItemDecoration(40));
+        popularProductAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, View view) {
+                Intent intent = new Intent(getContext(), ProductDetailActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 
@@ -106,11 +109,6 @@ public class CustomerHomeFragment extends Fragment{
 
     private void initializeData() {
         categories = new ArrayList<>();
-//        categories.add(new Category("1", "Coffee"));
-//        categories.add(new Category("2", "Drinks"));
-//        categories.add(new Category("3", "Cakes"));
-//        categories.add(new Category("4", "Beer"));
-//        categories.add(new Category("5", "Others"));
 
         this.popularProducts = new ArrayList<>();
         this.popularProducts.add(new Product("Coffee", 14000));

@@ -4,27 +4,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.api.LoginApi;
-import vn.edu.ecomapp.model.MessageDto;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
-import vn.edu.ecomapp.util.AlertDialogMessage;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getName();
@@ -108,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
 
                            // Go to home activity
                            Toast.makeText(LoginActivity.this, "Congratulation! You have successfully login", Toast.LENGTH_SHORT).show();
-                           Intent intent = new Intent(LoginActivity.this, CustomerPanelBottomActivity.class);
+                           Intent intent = new Intent(LoginActivity.this, PanelActivity.class);
                            startActivity(intent);
                            finish();
 

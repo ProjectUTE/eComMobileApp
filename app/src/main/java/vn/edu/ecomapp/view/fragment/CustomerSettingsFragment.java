@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.auth.FirebaseAuth;
 
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.view.activity.MainActivity;
@@ -20,7 +19,6 @@ import vn.edu.ecomapp.view.activity.MainActivity;
 public class CustomerSettingsFragment extends Fragment {
 
     Button logoutButton;
-    FirebaseAuth firebaseAuth;
 
 
     private  void initializeComponents(View view) {
@@ -29,7 +27,6 @@ public class CustomerSettingsFragment extends Fragment {
 
     private void handleLogout() {
         this.logoutButton.setOnClickListener(view -> {
-            FirebaseAuth.getInstance().signOut();
 
             Intent intent = new Intent(getContext(), MainActivity.class);
             startActivity(intent);

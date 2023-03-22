@@ -4,37 +4,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-        <ScrollView
+        <TextView
+            android:layout_marginHorizontal="20dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/open_sans_bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="Categories"
+            android:paddingVertical="15dp"
+            android:textAlignment="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_view_title"
+                />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewCategories"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="SpeakableTextPresentCheck">
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                       >
-                        <TextView
-                            android:textSize="22sp"
-                            android:textStyle="bold"
-                            android:fontFamily="@font/open_sans_bold"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:text="Categories"
-                            android:paddingVertical="15dp"
-                            android:textAlignment="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/text_view_title"
-                                />
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintTop_toBottomOf="@id/text_view_title"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            tools:listitem="@layout/list_category_item_vertical"
-                                />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/text_view_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:listitem="@layout/list_category_item_horizontal"
+                />
+        <TextView
+            android:layout_marginHorizontal="20dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/open_sans_bold"
+            app:layout_constraintTop_toBottomOf="@id/recyclerViewCategories"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="Products"
+            android:paddingVertical="15dp"
+            android:textAlignment="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/productTitle"
+                />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/productRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/productTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:listitem="@layout/list_product_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>
