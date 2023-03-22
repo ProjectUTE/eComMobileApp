@@ -68,7 +68,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             super(itemView);
             imageViewBackground = itemView.findViewById(R.id.image_view_background);
             textViewTitle = itemView.findViewById(R.id.text_view_title);
-
         }
     }
 }
