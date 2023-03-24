@@ -1,6 +1,7 @@
 package vn.edu.ecomapp.view.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,10 +31,13 @@ public class ProductDetailActivity extends AppCompatActivity {
     private void loadImagePreviews() {
         imagePreviewsRecycerView = findViewById(R.id.recyclerViewImagesPreview);
         ImagePreviewAdapter adapter = new ImagePreviewAdapter(imagePreviews, ProductDetailActivity.this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
+//        imagePreviewsRecycerView.setLayoutManager(linearLayoutManager);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(ProductDetailActivity.this, 3);
+        imagePreviewsRecycerView.setLayoutManager(gridLayoutManager);
+
         imagePreviewsRecycerView.setAdapter(adapter);
-        imagePreviewsRecycerView.setLayoutManager(linearLayoutManager);
-        imagePreviewsRecycerView.addItemDecoration(new SpacesItemDecoration(40));
+//        imagePreviewsRecycerView.addItemDecoration(new SpacesItemDecoration(40));
     }
 
     private void initData() {

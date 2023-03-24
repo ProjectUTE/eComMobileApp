@@ -11,14 +11,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your cart"
+        android:text="My cart"
         android:fontFamily="@font/open_sans_bold"
-        android:textSize="20sp"
+        android:textSize="@dimen/size_20"
         android:textColor="@color/orange"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/margin_10"
         />
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/margin_20"
         app:layout_constraintTop_toBottomOf="@id/cartTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,10 +28,10 @@
         tools:listitem="@layout/list_cart_item"
         />
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/margin_20"
         android:background="@drawable/background_corner_white_50"
-        android:padding="10dp"
-        android:layout_marginHorizontal="20dp"
+        android:padding="@dimen/padding_10"
+        android:layout_marginHorizontal="@dimen/margin_10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/recycler_view_cart"

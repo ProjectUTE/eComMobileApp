@@ -45,14 +45,13 @@ public class CartAdapter  extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewTitle, textViewFeeEachItem, textViewTotalEachItem, textViewQuantity;
+        TextView textViewTitle, textViewTotalEachItem, textViewQuantity;
         ImageView imageView;
         Button plusButton, minusButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.text_view_title);
-            textViewFeeEachItem = itemView.findViewById(R.id.text_view_fee_each_item);
             textViewTotalEachItem = itemView.findViewById(R.id.text_view_total_each_item);
             textViewQuantity = itemView.findViewById(R.id.text_view_quantity);
             plusButton = itemView.findViewById(R.id.button_plus);

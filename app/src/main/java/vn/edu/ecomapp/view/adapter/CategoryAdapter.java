@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 import vn.edu.ecomapp.R;
@@ -32,6 +34,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         this.categories = categories;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setData(List<Category> categories) {
           this.categories = categories;
           notifyDataSetChanged();
@@ -51,7 +54,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         if(category == null) return;
         holder.itemView.setOnClickListener(view -> listener.onItemClick(position, view));
         holder.textViewTitle.setText(category.getName());
-        holder.imageViewBackground.setImageResource(R.drawable.coffee);
+//        holder.imageViewBackground.setImageResource(R.drawable.coffee);
+        String url = "https://product.hstatic.net/1000075078/product/1655348107_mochi-choco_9694871c490b426ab333810d17261c96_large.jpg";
+        if(context != null)
+            Glide.with(context).load(url).into(holder.imageViewBackground);
     }
 
     @Override

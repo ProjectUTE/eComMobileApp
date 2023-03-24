@@ -16,13 +16,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".TrackingOderActivity"
+            android:name=".view.activity.TrackingOderActivity"
             android:exported="false" />
         <activity
-            android:name=".EditProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CheckoutActivity"
+            android:name=".view.activity.CheckoutActivity"
             android:exported="false" />
         <activity
             android:name=".view.activity.PanelActivity"

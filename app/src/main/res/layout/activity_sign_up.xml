@@ -54,6 +54,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     android:id="@+id/edit_text_email"
                     android:layout_width="300dp"
+                    app:boxBackgroundMode="none"
                     android:layout_height="60dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -71,6 +72,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    app:boxBackgroundMode="none"
                     android:id="@+id/edit_text_password"
                     app:layout_constraintTop_toBottomOf="@id/edit_text_email"
                     app:layout_constraintStart_toStartOf="parent"
@@ -96,6 +98,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    app:boxBackgroundMode="none"
                     app:layout_constraintTop_toBottomOf="@id/edit_text_password"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

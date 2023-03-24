@@ -7,6 +7,7 @@
     android:background="@color/white_50"
     tools:context=".view.activity.ProductDetailActivity">
     <ScrollView
+        android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
@@ -69,9 +70,9 @@
                     <ImageView
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:src="@drawable/heart"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/favorite"
                         android:scaleType="fitXY"
                         />
                    </androidx.constraintlayout.widget.ConstraintLayout>
@@ -102,6 +103,7 @@
                     />
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_marginTop="20dp"
+                    android:layout_marginHorizontal="10dp"
                     app:layout_constraintTop_toBottomOf="@id/productDescription"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_width="match_parent"
@@ -113,6 +115,8 @@
                     app:layout_constraintTop_toBottomOf="@id/recyclerViewImagesPreview"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="20dp"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
