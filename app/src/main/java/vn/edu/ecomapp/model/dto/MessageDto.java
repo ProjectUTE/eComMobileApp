@@ -1,4 +1,4 @@
-package vn.edu.ecomapp.model;
+package vn.edu.ecomapp.model.dto;
 
 public class MessageDto {
     private String title;

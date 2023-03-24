@@ -18,7 +18,7 @@ import vn.edu.ecomapp.view.fragment.CustomerAccountFragment;
 import vn.edu.ecomapp.view.fragment.CustomerCartFragment;
 import vn.edu.ecomapp.view.fragment.CustomerFoodFragment;
 import vn.edu.ecomapp.view.fragment.CustomerHomeFragment;
-import vn.edu.ecomapp.view.fragment.CustomerSettingsFragment;
+import vn.edu.ecomapp.view.fragment.CustomerHistoryFragment;
 
 public class PanelActivity extends AppCompatActivity implements OnScrollListenerMain {
 
@@ -50,8 +50,8 @@ public class PanelActivity extends AppCompatActivity implements OnScrollListener
                     fragment = new CustomerAccountFragment();
                     break;
 
-                case  R.id.setting:
-                    fragment = new CustomerSettingsFragment();
+                case  R.id.history:
+                    fragment = new CustomerHistoryFragment();
                     break;
 
                 case  R.id.food:

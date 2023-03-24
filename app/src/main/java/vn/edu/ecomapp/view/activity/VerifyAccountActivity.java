@@ -17,7 +17,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.api.LoginApi;
-import vn.edu.ecomapp.model.MessageDto;
+import vn.edu.ecomapp.model.dto.MessageDto;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.util.AlertDialogMessage;
 

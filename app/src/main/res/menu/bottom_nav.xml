@@ -17,14 +17,15 @@
        android:title=""
        android:id="@+id/cart"
        />
+
+    <item
+        android:title="History"
+        android:id="@+id/history"
+        android:icon="@drawable/history"
+        />
     <item
         android:title="Account"
         android:id="@+id/account"
         android:icon="@drawable/user"
-        />
-    <item
-        android:title="Settings"
-        android:id="@+id/setting"
-        android:icon="@drawable/settings"
         />
 </menu>

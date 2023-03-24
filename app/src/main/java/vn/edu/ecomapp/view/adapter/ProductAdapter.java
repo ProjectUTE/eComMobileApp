@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,7 +19,7 @@ import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.model.Product;
 import vn.edu.ecomapp.view.adapter.listener.OnItemClickListener;
 
-public class PopularProductAdapter  extends RecyclerView.Adapter<PopularProductAdapter.ViewHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
    Context context;
    List<Product> products;
 
@@ -27,25 +28,24 @@ public class PopularProductAdapter  extends RecyclerView.Adapter<PopularProductA
         this.listener = listener;
     }
 
-    public PopularProductAdapter(Context context, List<Product> products) {
+    public ProductAdapter(Context context, List<Product> products) {
         this.context = context;
         this.products = products;
     }
 
     @NonNull
     @Override
-    public PopularProductAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(this.context).inflate(R.layout.list_product_popular_item, parent, false);
+    public ProductAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(this.context).inflate(R.layout.list_product_item, parent, false);
         return new ViewHolder(view);
     }
 
     @SuppressLint("DefaultLocale")
     @Override
-    public void onBindViewHolder(@NonNull PopularProductAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ProductAdapter.ViewHolder holder, int position) {
         final Product product = this.products.get(position);
         if (product == null) return;
         holder.textViewName.setText(product.getProductName());
-        holder.textViewPrice.setText(String.format("%d VND", product.getNewPrice()));
         holder.itemView.setOnClickListener(view -> listener.onItemClick(position, view));
     }
 
@@ -58,16 +58,17 @@ public class PopularProductAdapter  extends RecyclerView.Adapter<PopularProductA
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        ConstraintLayout constraintLayout;
         TextView textViewName;
         ImageView imageViewPreview;
-        TextView textViewPrice;
+        TextView textViewDescription;
+
+        Button viewDetailButton;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            constraintLayout = itemView.findViewById(R.id.popularProductItemContainer);
-            textViewName = itemView.findViewById(R.id.text_view_name);
+            textViewName = itemView.findViewById(R.id.text_view_title);
             imageViewPreview = itemView.findViewById(R.id.image_view_preview);
-            textViewPrice = itemView.findViewById(R.id.text_view_price);
+            textViewDescription = itemView.findViewById(R.id.text_view_description);
+            viewDetailButton = itemView.findViewById(R.id.button_view_detail);
         }
     }
 }

@@ -35,17 +35,39 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Please login to your account"
+            android:text="You can login with"
             android:textSize="13sp"
             app:layout_constraintTop_toBottomOf="@id/loginTitle"
             />
 
+        <ImageView
+            android:layout_marginTop="@dimen/margin_10"
+            app:layout_constraintTop_toBottomOf="@id/loginDescription"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/google"
+            android:id="@+id/googleButton"
+            />
+
+        <TextView
+            android:layout_marginTop="@dimen/margin_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OR"
+            app:layout_constraintTop_toBottomOf="@id/googleButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/or"
+            />
+
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:id="@+id/loginFormContainer"
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/loginDescription"
+            app:layout_constraintTop_toBottomOf="@id/or"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
@@ -56,6 +78,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:id="@+id/edit_text_email"
                 android:layout_width="300dp"
+                app:boxBackgroundMode="none"
                 android:layout_height="60dp">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -80,6 +103,7 @@
                 android:id="@+id/edit_text_password"
                 android:layout_width="300dp"
                 android:layout_height="80dp"
+                app:boxBackgroundMode="none"
                 android:layout_marginTop="10dp"
                 >
                 <com.google.android.material.textfield.TextInputEditText

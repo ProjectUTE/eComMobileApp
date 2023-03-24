@@ -6,22 +6,37 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.api.LoginApi;
+import vn.edu.ecomapp.oauth2.GoogleAuthManager;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getName();
+
+    // Google
+    GoogleSignInClient googleSignInClient;
+    GoogleSignInOptions googleSignInOptions;
+
 //    Components
+    ImageView googleLoginButton;
     CheckBox rememberMeCheckbox;
     TextView textViewNotYetAccount, textViewForgotPassword;
     TextInputLayout editTextEmail, editTextPassword;
@@ -36,44 +51,84 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+     // Get data = {username, password} stored
         getSharePreferences();
-        this.initializeComponents();
-        this.handleTextViewClick();
-        this.handleButtonLoginClick();
-        this.handleGoToForgotPasswordActivity();
+//        Init API
+        initGoogleService();
+        initLoginApi();
+
+//        Init Component
+        initializeComponents();
+
+//        Go to another activity if user click
+        goToForgotPasswordForm();
+        goToSignUpForm();
+
+        // Get data = {username, password} stored
+        getSharePreferences();
+
+//        Handle Login => Normal or login with google Service
+        loginNormal();
+        loginWithGoogle();
+
+    }
+
+    private void loginWithGoogle() {
+        googleLoginButton.setOnClickListener(view -> {
+//            Hiện lên popup chọn account
+            Intent signInIntent = googleSignInClient.getSignInIntent();
+//            Sau khi đã lựa chọn account
+            final int requestCode = 1000;
+            startActivityForResult(signInIntent, requestCode);
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1000) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                task.getResult(ApiException.class);
+                goToPanelActivity();
+            }catch (ApiException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void initLoginApi() {
+        loginApi = RetrofitClient.getRetrofit().create(LoginApi.class);
+    }
+
+    private void initGoogleService() {
+        googleSignInOptions = GoogleAuthManager.getGoogleSignInOptions();
+        googleSignInClient = GoogleAuthManager.getGoogleSignInClient(this, googleSignInOptions);
     }
 
     private void getSharePreferences() {
         this.sharedPreferences = getSharedPreferences("dataLogin", MODE_PRIVATE);
     }
 
-    private void handleGoToForgotPasswordActivity() {
-        this.textViewForgotPassword.setOnClickListener(view -> {
-            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-            startActivity(intent);
-            finish();
-        });
-    }
-
     private void initializeComponents() {
-        this.textViewNotYetAccount = findViewById(R.id.text_view_not_yet_account);
-        this.textViewForgotPassword = findViewById(R.id.text_view_forgot_password);
+        textViewNotYetAccount = findViewById(R.id.text_view_not_yet_account);
+        textViewForgotPassword = findViewById(R.id.text_view_forgot_password);
+        rememberMeCheckbox = findViewById(R.id.checkbox_remember_me);
+        buttonLogin = findViewById(R.id.button_login);
+        editTextEmail = findViewById(R.id.edit_text_email);
+        editTextPassword = findViewById(R.id.edit_text_password);
+        googleLoginButton = findViewById(R.id.googleButton);
 
-        // init edit text
-        this.editTextEmail = findViewById(R.id.edit_text_email);
-        this.editTextPassword = findViewById(R.id.edit_text_password);
+//        Get Data
         Objects.requireNonNull(this.editTextEmail.getEditText()).setText(sharedPreferences.getString("email", ""));
         Objects.requireNonNull(this.editTextPassword.getEditText()).setText(sharedPreferences.getString("password", ""));
 //        if(sharedPreferences.contains("checked")) {
 //            this.rememberMeCheckbox.setChecked(sharedPreferences.getBoolean("checked", false));
 //        }
-        this.buttonLogin = findViewById(R.id.button_login);
-        this.rememberMeCheckbox = findViewById(R.id.checkbox_remember_me);
 
-        loginApi = RetrofitClient.getRetrofit().create(LoginApi.class);
     }
 
-    private void handleTextViewClick() {
+    private void goToSignUpForm() {
         this.textViewNotYetAccount.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
             startActivity(intent);
@@ -81,7 +136,21 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void  handleButtonLoginClick() {
+    private void goToForgotPasswordForm() {
+        this.textViewForgotPassword.setOnClickListener(view -> {
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    private void goToPanelActivity() {
+        Intent intent = new Intent(LoginActivity.this, PanelActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void  loginNormal() {
        this.buttonLogin.setOnClickListener(v -> {
            email = Objects.requireNonNull(editTextEmail.getEditText()).getText().toString().trim();
            password = Objects.requireNonNull(editTextPassword.getEditText()).getText().toString();
@@ -101,11 +170,7 @@ public class LoginActivity extends AppCompatActivity {
 
                            // Go to home activity
                            Toast.makeText(LoginActivity.this, "Congratulation! You have successfully login", Toast.LENGTH_SHORT).show();
-                           Intent intent = new Intent(LoginActivity.this, PanelActivity.class);
-                           startActivity(intent);
-                           finish();
-
-
+                            goToPanelActivity();
 //               loginApi.loginUser(email, password).enqueue(new Callback<MessageDto>() {
 //                   @Override
 //                   public void onResponse(@NonNull Call<MessageDto> call, @NonNull Response<MessageDto> response) {
@@ -174,6 +239,4 @@ public class LoginActivity extends AppCompatActivity {
 
          return  isEmailValid && isPasswordValid;
     }
-
-
 }
