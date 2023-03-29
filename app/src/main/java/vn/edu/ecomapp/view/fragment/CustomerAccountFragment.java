@@ -22,7 +22,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.oauth2.GoogleAuthManager;
+import vn.edu.ecomapp.services.oauth2.GoogleAuthManager;
+import vn.edu.ecomapp.util.FragmentManager;
 import vn.edu.ecomapp.view.activity.LoginActivity;
 
 public class CustomerAccountFragment extends Fragment {
@@ -102,9 +103,6 @@ public class CustomerAccountFragment extends Fragment {
     }
 
     private void loadFragment(Fragment fragment) {
-         requireActivity().getSupportFragmentManager().beginTransaction()
-             .replace(R.id.fragmentContainer, fragment, "changePasswordFragment")
-             .addToBackStack(null)
-             .commit();
+        FragmentManager.nextFragment(requireActivity(), fragment, R.id.fragmentContainer, null);
     }
 }

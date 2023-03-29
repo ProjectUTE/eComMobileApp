@@ -19,9 +19,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/currentPassword"
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_marginTop="@dimen/margin_20"
+            android:layout_width="@dimen/width_100"
+            android:layout_height="@dimen/height_100"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/profile"
+            />
+
+        <Button
+            android:id="@+id/uploadAvatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10"
+            android:text="Upload avater"
+            android:textAllCaps="false"
+            android:textSize="13dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/avatar"
+            tools:ignore="TextSizeCheck" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/displayName"
+            app:layout_constraintTop_toBottomOf="@id/uploadAvatar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="@dimen/margin_10"
@@ -34,18 +58,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/edit_text_corner_100"
-                android:drawableLeft="@drawable/lock_orange"
                 android:drawablePadding="@dimen/padding_10"
                 android:fontFamily="@font/open_sans"
-                android:hint="Current password"
+                android:hint="Display name"
                 android:inputType="text"
                 android:padding="10dp"
                 android:textSize="13sp"
                 tools:ignore="HardcodedText,RtlHardcoded,TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/newPassword"
-            app:layout_constraintTop_toBottomOf="@id/currentPassword"
+            android:id="@+id/address"
+            app:layout_constraintTop_toBottomOf="@id/displayName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="10dp"
@@ -57,18 +80,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/edit_text_corner_100"
-                android:drawableLeft="@drawable/lock_orange"
                 android:drawablePadding="10dp"
                 android:fontFamily="@font/open_sans"
-                android:hint="New password"
+                android:hint="Address"
                 android:inputType="text"
                 android:padding="10dp"
                 android:textSize="13sp"
                 tools:ignore="HardcodedText,RtlHardcoded,TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/confirmPassword"
-            app:layout_constraintTop_toBottomOf="@id/newPassword"
+            android:id="@+id/phonenumber"
+            app:layout_constraintTop_toBottomOf="@id/address"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="10dp"
@@ -80,17 +102,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/edit_text_corner_100"
-                android:drawableLeft="@drawable/lock_orange"
                 android:drawablePadding="10dp"
                 android:fontFamily="@font/open_sans"
-                android:hint="Confirm password"
+                android:hint="Phonenumber"
                 android:inputType="text"
                 android:padding="10dp"
                 android:textSize="13sp"
                 tools:ignore="HardcodedText,RtlHardcoded,TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
         <Button
-            app:layout_constraintTop_toBottomOf="@id/confirmPassword"
+            app:layout_constraintTop_toBottomOf="@id/phonenumber"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="40dp"

@@ -1,4 +1,4 @@
-package vn.edu.ecomapp.oauth2;
+package vn.edu.ecomapp.services.oauth2;
 
 import android.app.Activity;
 import android.content.Context;

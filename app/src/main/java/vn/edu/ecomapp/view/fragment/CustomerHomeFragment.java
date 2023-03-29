@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ import vn.edu.ecomapp.api.ProductApi;
 import vn.edu.ecomapp.model.Category;
 import vn.edu.ecomapp.model.Product;
 import vn.edu.ecomapp.model.Slide;
-import vn.edu.ecomapp.oauth2.GoogleAuthManager;
+import vn.edu.ecomapp.services.oauth2.GoogleAuthManager;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.view.activity.ProductDetailActivity;
 import vn.edu.ecomapp.view.adapter.CategoryAdapter;
@@ -62,6 +62,7 @@ public class CustomerHomeFragment extends Fragment{
 
     TextView displayName;
     ImageView avatar;
+    TextInputLayout search;
 
     private void getAccount() {
         googleSignInAccount = GoogleAuthManager.getGoogleSignInAccount(getContext());
@@ -96,6 +97,8 @@ public class CustomerHomeFragment extends Fragment{
     private void initComponents(View view) {
         displayName = view.findViewById(R.id.profileName);
         avatar = view.findViewById(R.id.avatar);
+        search = view.findViewById(R.id.search);
+
     }
 
     private void loadInfoAccount() {
@@ -181,7 +184,6 @@ public class CustomerHomeFragment extends Fragment{
             }
             @Override
             public void onFailure(@NonNull Call<List<Category>> call, @NonNull Throwable t) {
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.d("Home Activity", t.getMessage());
             }
         });
@@ -202,10 +204,10 @@ public class CustomerHomeFragment extends Fragment{
 
 //        Slides
         slides = new ArrayList<>();
-        slides.add(new Slide("https://images.unsplash.com/photo-1678901783809-4eef2aab00fe?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"));
-        slides.add(new Slide("https://images.unsplash.com/photo-1672243776760-67aec979f591?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"));
-        slides.add(new Slide("https://images.unsplash.com/photo-1678599694191-0bd740f04065?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"));
-        slides.add(new Slide("https://images.unsplash.com/photo-1679150903021-6571b98b4afe?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDIzfGJvOGpRS1RhRTBZfHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60"));
-        slides.add(new Slide("https://images.unsplash.com/photo-1679155506707-a072b305dd91?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDI3fGJvOGpRS1RhRTBZfHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60"));
+        slides.add(new Slide("https://file.hstatic.net/1000075078/file/banyeu_desktop_5c0125b0ec644df3b054249c55eb986d.jpg"));
+        slides.add(new Slide("https://file.hstatic.net/1000075078/file/thomngon_desktop_e9cab329b26d4940af18c55d4cd4421c.jpg"));
+        slides.add(new Slide("https://file.hstatic.net/1000075078/file/freeship_desktop_5abfba8de1cf412fb960741a3700444a.jpg"));
+        slides.add(new Slide("https://file.hstatic.net/1000075078/file/thomngon_desktop_e9cab329b26d4940af18c55d4cd4421c.jpg"));
+        slides.add(new Slide("https://file.hstatic.net/1000075078/file/ngaymoi_desktop_d9a24d002be449338a97d0448d0bd3fc.jpg"));
     }
 }

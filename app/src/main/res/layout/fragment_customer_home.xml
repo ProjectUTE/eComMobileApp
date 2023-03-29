@@ -49,26 +49,30 @@
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
     <!--            Search -->
-    <EditText
-        app:layout_constraintTop_toBottomOf="@id/profileContainer"
-        android:elevation="1dp"
-        android:id="@+id/search"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/edit_text_corner_100"
-        android:layout_marginHorizontal="10dp"
-        android:focusable="false"
-        android:focusableInTouchMode="true"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:drawableLeft="@drawable/search_24"
-        android:drawablePadding="10dp"
-        android:fontFamily="@font/open_sans"
-        android:hint="Search Coffee Here"
-        android:padding="10dp"
-        android:textSize="14sp"
-        android:inputType="text" />
+
+     <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/search"
+            app:layout_constraintTop_toBottomOf="@id/profileContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="@dimen/margin_10"
+            android:layout_marginTop="@dimen/margin_20"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:boxBackgroundMode="none">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/edit_text_corner_100"
+                android:drawablePadding="@dimen/padding_10"
+                android:fontFamily="@font/open_sans"
+                android:hint="Search Coffee Here"
+                android:inputType="text"
+                android:padding="10dp"
+                android:textSize="13sp"
+                tools:ignore="HardcodedText,RtlHardcoded,TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
 <!--            Banner -->
     <androidx.constraintlayout.widget.ConstraintLayout
         app:layout_constraintTop_toBottomOf="@id/search"
@@ -97,6 +101,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
+
         <TextView
             android:layout_marginHorizontal="10dp"
             android:id="@+id/categoryTitle"

@@ -68,7 +68,7 @@
             android:textSize="@dimen/size_14"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/addressContainer"
         app:layout_constraintTop_toBottomOf="@id/dateContainer"
         app:layout_constraintStart_toStartOf="parent"
