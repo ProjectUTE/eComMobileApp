@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
@@ -12,11 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import vn.edu.ecomapp.R;
+import vn.edu.ecomapp.util.FragmentManager;
 
 public class ChangePasswordFragment extends Fragment {
 
     private Toolbar toolbar;
     TextView appBarTitle;
+
+    ImageView backButton;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -28,8 +32,19 @@ public class ChangePasswordFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        toolbar = view.findViewById(R.id.toolbar);
-        appBarTitle = view.findViewById(R.id.appBarTitle);
-        appBarTitle.setText("Change password 1");
+       initComponents(view);
     }
+
+    private void initComponents(View view) {
+        toolbar = view.findViewById(R.id.toolbar);
+        backButton = view.findViewById(R.id.backButton);
+
+        appBarTitle = view.findViewById(R.id.appBarTitle);
+        appBarTitle.setText("Change password");
+        backButton.setOnClickListener(view1 -> {
+//            FragmentManager.nextFragment(requireActivity(), new CustomerAccountFragment(), R.id.fragmentContainer, null);
+            getActivity().getSupportFragmentManager().popBackStack();
+        });
+    }
+
 }

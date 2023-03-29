@@ -1,24 +1,64 @@
 package vn.edu.ecomapp.retrofit;
 
-import java.util.concurrent.TimeUnit;
-
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import vn.edu.ecomapp.util.TokenManager;
 
 public class RetrofitClient {
     private static final String BASE_URL = "http://192.168.137.1:8081/api/";
+    private final static OkHttpClient client = buildClient();
+    private final static Retrofit retrofit = buildRetrofit(client);
+
+    private static OkHttpClient buildClient() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .addInterceptor(chain -> {
+                    Request request = chain.request();
+                    Request.Builder builder1 = request.newBuilder()
+                            .addHeader("Accept", "application/json")
+                            .addHeader("Connection", "close");
+                    request = builder1.build();
+                    return  chain.proceed(request);
+                });
+        return builder.build();
+    }
 
     public static Retrofit getRetrofit() {
-    OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(3000, TimeUnit.SECONDS) // set thời gian kết nối tối đa là 30 giây
-                .readTimeout(3000, TimeUnit.SECONDS) // set thời gian đọc dữ liệu tối đa là 30 giây
-                .build();
-    // thêm OkHttpClient vào Retrofit.Builder
-    return new Retrofit.Builder()
-         .baseUrl(BASE_URL)
-         .client(okHttpClient) // Thêm OkHttpClient vào Retrofit.Builder
-         .addConverterFactory(GsonConverterFactory.create())
-         .build();
+        return retrofit;
     }
+
+    private static Retrofit buildRetrofit(OkHttpClient client) {
+        return  new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    // Create api without authorization
+    public static <T> T createApi(Class<T> service){
+        return retrofit.create(service);
+    }
+
+    // Create api with authorization
+    public static <T> T createApiWithAuth(Class<T> service, final TokenManager tokenManager) {
+         OkHttpClient newClient = client.newBuilder().addInterceptor(chain -> {
+
+             Request request = chain.request();
+
+             Request.Builder builder = request.newBuilder();
+
+             String accessToken = tokenManager.getAccessToken().getRefreshToken();
+
+             if(accessToken != null){
+                 builder.addHeader("Authorization", "Bearer " + accessToken);
+             }
+             request = builder.build();
+             return chain.proceed(request);
+         }).authenticator(CustomAuthenticator.getInstance(tokenManager)).build();
+        Retrofit newRetrofit = retrofit.newBuilder().client(newClient).build();
+        return newRetrofit.create(service);
+    }
+
 }

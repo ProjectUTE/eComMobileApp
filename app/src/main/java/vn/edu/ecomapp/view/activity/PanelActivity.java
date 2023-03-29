@@ -17,8 +17,8 @@ import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.view.fragment.CustomerAccountFragment;
 import vn.edu.ecomapp.view.fragment.CustomerCartFragment;
 import vn.edu.ecomapp.view.fragment.CustomerFoodFragment;
-import vn.edu.ecomapp.view.fragment.CustomerHomeFragment;
 import vn.edu.ecomapp.view.fragment.CustomerHistoryFragment;
+import vn.edu.ecomapp.view.fragment.CustomerHomeFragment;
 
 public class PanelActivity extends AppCompatActivity implements OnScrollListenerMain {
 
@@ -79,7 +79,12 @@ public class PanelActivity extends AppCompatActivity implements OnScrollListener
 
      private boolean loadFragment(Fragment fragment) {
         if(fragment != null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
+            getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.enter_left_to_right, R.anim.exit_left_to_right,
+                            R.anim.enter_right_to_left, R.anim.exit_right_to_left)
+                .replace(R.id.fragmentContainer, fragment, null)
+                .addToBackStack(null)
+                .commit();
             return  true;
         }
         return  false;

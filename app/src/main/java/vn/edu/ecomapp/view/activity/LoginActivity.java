@@ -1,7 +1,6 @@
 package vn.edu.ecomapp.view.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -25,11 +24,14 @@ import java.util.Objects;
 
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.api.LoginApi;
-import vn.edu.ecomapp.oauth2.GoogleAuthManager;
+import vn.edu.ecomapp.model.login.Login;
+import vn.edu.ecomapp.services.oauth2.GoogleAuthManager;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
+import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.DataLoginManager;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = LoginActivity.class.getName();
+//    private static final String TAG = LoginActivity.class.getName();
 
     // Google
     GoogleSignInClient googleSignInClient;
@@ -44,29 +46,23 @@ public class LoginActivity extends AppCompatActivity {
 
 //    Data
     String email = "", password = "";
-    SharedPreferences sharedPreferences;
+    DataLoginManager dataLoginManager;
     LoginApi loginApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-     // Get data = {username, password} stored
-        getSharePreferences();
-//        Init API
-        initGoogleService();
-        initLoginApi();
-
+        dataLoginManager = DataLoginManager
+                .getInstance(getSharedPreferences(Constants.DATA_USER_LOGIN, MODE_PRIVATE));
+        loginApi = RetrofitClient.createApi(LoginApi.class);
+        googleSignInOptions = GoogleAuthManager.getGoogleSignInOptions();
+        googleSignInClient = GoogleAuthManager.getGoogleSignInClient(this, googleSignInOptions);
 //        Init Component
         initializeComponents();
-
 //        Go to another activity if user click
         goToForgotPasswordForm();
         goToSignUpForm();
-
-        // Get data = {username, password} stored
-        getSharePreferences();
-
 //        Handle Login => Normal or login with google Service
         loginNormal();
         loginWithGoogle();
@@ -97,19 +93,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void initLoginApi() {
-        loginApi = RetrofitClient.getRetrofit().create(LoginApi.class);
-    }
-
-    private void initGoogleService() {
-        googleSignInOptions = GoogleAuthManager.getGoogleSignInOptions();
-        googleSignInClient = GoogleAuthManager.getGoogleSignInClient(this, googleSignInOptions);
-    }
-
-    private void getSharePreferences() {
-        this.sharedPreferences = getSharedPreferences("dataLogin", MODE_PRIVATE);
-    }
-
     private void initializeComponents() {
         textViewNotYetAccount = findViewById(R.id.text_view_not_yet_account);
         textViewForgotPassword = findViewById(R.id.text_view_forgot_password);
@@ -119,12 +102,10 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.edit_text_password);
         googleLoginButton = findViewById(R.id.googleButton);
 
-//        Get Data
-        Objects.requireNonNull(this.editTextEmail.getEditText()).setText(sharedPreferences.getString("email", ""));
-        Objects.requireNonNull(this.editTextPassword.getEditText()).setText(sharedPreferences.getString("password", ""));
-//        if(sharedPreferences.contains("checked")) {
-//            this.rememberMeCheckbox.setChecked(sharedPreferences.getBoolean("checked", false));
-//        }
+        Login dataLogin = dataLoginManager.getDataLogin();
+        Objects.requireNonNull(editTextEmail.getEditText()).setText(dataLogin.getEmail());
+        Objects.requireNonNull(editTextPassword.getEditText()).setText(dataLogin.getPassword());
+        rememberMeCheckbox.setChecked(dataLogin.getIsRemember());
 
     }
 
@@ -156,21 +137,18 @@ public class LoginActivity extends AppCompatActivity {
            password = Objects.requireNonNull(editTextPassword.getEditText()).getText().toString();
 
            if(isValidate()) {
-               SharedPreferences.Editor editor = sharedPreferences.edit();
-                           if(rememberMeCheckbox.isChecked()) {
-                               editor.putString("email", email);
-                               editor.putString("password", password);
-                               editor.putBoolean("checked", rememberMeCheckbox.isChecked());
-                           } else  {
-                               editor.remove("email");
-                               editor.remove("password");
-                               editor.remove("checked");
-                           }
-                           editor.apply();
-
-                           // Go to home activity
-                           Toast.makeText(LoginActivity.this, "Congratulation! You have successfully login", Toast.LENGTH_SHORT).show();
-                            goToPanelActivity();
+               if(rememberMeCheckbox.isChecked()) {
+                    Login dataLogin = new Login();
+                    dataLogin.setRemember(rememberMeCheckbox.isChecked());
+                    dataLogin.setEmail(email);
+                    dataLogin.setPassword(password);
+                    dataLoginManager.saveDataLogin(dataLogin);
+               } else  {
+                   dataLoginManager.removeDataLogin();
+               }
+               // Go to home activity
+               Toast.makeText(LoginActivity.this, "Congratulation! You have successfully login", Toast.LENGTH_SHORT).show();
+                goToPanelActivity();
 //               loginApi.loginUser(email, password).enqueue(new Callback<MessageDto>() {
 //                   @Override
 //                   public void onResponse(@NonNull Call<MessageDto> call, @NonNull Response<MessageDto> response) {

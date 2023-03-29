@@ -5,12 +5,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
@@ -64,15 +67,17 @@ public class SliderAdapter extends  RecyclerView.Adapter<SliderAdapter.ViewHolde
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final RoundedImageView slideItem;
+        private final ImageView slideItem;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             slideItem = itemView.findViewById(R.id.slideItem);
         }
 
         void  setSlideItem(Slide slide) {
-//            Glide.with(context).load(slide.getImageUrl()).into(slideItem);
-            slideItem.setImageResource(R.drawable.coffee);
+            Glide.with(context).load(slide.getImageUrl())
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(10)))
+                    .into(slideItem);
+//            slideItem.setImageResource(R.drawable.coffee);
         }
 
 
