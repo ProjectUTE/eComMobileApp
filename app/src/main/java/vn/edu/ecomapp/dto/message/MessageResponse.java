@@ -1,17 +1,18 @@
-package vn.edu.ecomapp.model.dto;
+package vn.edu.ecomapp.dto.message;
 
-public class MessageDto {
-    private String title;
-    private String message;
-    private String status;
+public class MessageResponse {
+    protected String title;
+    protected String message;
+    protected String status;
 
-    public MessageDto() {
+    protected String httpStatus;
+
+    public String getHttpStatus() {
+        return httpStatus;
     }
 
-    public MessageDto(String title, String message, String status) {
-        this.title = title;
-        this.message = message;
-        this.status = status;
+    public void setHttpStatus(String httpStatus) {
+        this.httpStatus = httpStatus;
     }
 
     public String getTitle() {

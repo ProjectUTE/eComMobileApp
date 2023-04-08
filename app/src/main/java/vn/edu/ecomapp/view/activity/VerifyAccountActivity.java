@@ -17,7 +17,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.api.LoginApi;
-import vn.edu.ecomapp.model.dto.MessageDto;
+import vn.edu.ecomapp.dto.message.MessageResponse;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.util.AlertDialogMessage;
 
@@ -51,9 +51,9 @@ public class VerifyAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String otpCode = Objects.requireNonNull(editTextVerifyCode.getEditText()).getText().toString().trim();
-                loginApi.verifyAccountUser(otpCode).enqueue(new Callback<MessageDto>() {
+                loginApi.verifyAccountUser(otpCode).enqueue(new Callback<MessageResponse>() {
                     @Override
-                    public void onResponse(Call<MessageDto> call, Response<MessageDto> response) {
+                    public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
                         AlertDialogMessage.showAlertMessage(VerifyAccountActivity.this, response.body().getTitle(), response.body().getMessage());
                         if(response.body().getStatus().equals("SUCCESS")){
                             Intent intent = new Intent(VerifyAccountActivity.this, LoginActivity.class);
@@ -67,7 +67,7 @@ public class VerifyAccountActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<MessageDto> call, Throwable t) {
+                    public void onFailure(Call<MessageResponse> call, Throwable t) {
                         Toast.makeText(VerifyAccountActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });

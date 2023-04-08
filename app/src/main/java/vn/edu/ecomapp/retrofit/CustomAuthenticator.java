@@ -1,5 +1,7 @@
 package vn.edu.ecomapp.retrofit;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -11,8 +13,11 @@ import okhttp3.Response;
 import okhttp3.Route;
 import retrofit2.Call;
 import vn.edu.ecomapp.api.AccessTokenApi;
-import vn.edu.ecomapp.model.AccessToken;
-import vn.edu.ecomapp.util.TokenManager;
+import vn.edu.ecomapp.dto.AccessToken;
+import vn.edu.ecomapp.dto.login.LoginRequest;
+import vn.edu.ecomapp.dto.login.LoginResponse;
+import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.prefs.TokenManager;
 
 public class CustomAuthenticator  implements Authenticator {
     private final TokenManager tokenManager;
@@ -30,19 +35,26 @@ public class CustomAuthenticator  implements Authenticator {
     @Nullable
     @Override
     public Request authenticate(@Nullable Route route, @NonNull Response response) throws IOException {
+        if(response.code() == Constants.BAD_REQUEST) {
+            String email = "doduongthaituan201102@gmail.com";
+            String password = "doduongthaituan201102@gmail.com";
+            int role = 1;
+            boolean isGoogleLogin = true;
 
-        AccessToken token = tokenManager.getAccessToken();
+            AccessToken token = tokenManager.getAccessToken();
+            AccessTokenApi accessTokenApi = RetrofitClient.createApi(AccessTokenApi.class);
 
-        AccessTokenApi accessTokenApi = RetrofitClient.createApi(AccessTokenApi.class);
-        Call<AccessToken> call = accessTokenApi.refreshToken(token.getRefreshToken());
-        retrofit2.Response<AccessToken> res = call.execute();
+            LoginRequest loginRequest = new LoginRequest(email, password, isGoogleLogin, role);
+            Call<LoginResponse> call = accessTokenApi.refreshToken(token.getRefreshToken(), token.getAccessToken(), loginRequest);
 
-        if(res.isSuccessful()){
-            AccessToken newToken = res.body();
-            tokenManager.saveToken(newToken);
-            return response.request().newBuilder().header("Authorization", "Bearer " + res.body().getAccessToken()).build();
-        }else{
-            return null;
+            retrofit2.Response<LoginResponse> res = call.execute();
+
+            if(res.isSuccessful()) {
+                AccessToken newToken = res.body().getToken();
+                tokenManager.saveToken(newToken);
+                return response.request().newBuilder().header("Authorization", "Bearer " + newToken.getAccessToken()).build();
+            }
         }
+        return null;
     }
 }

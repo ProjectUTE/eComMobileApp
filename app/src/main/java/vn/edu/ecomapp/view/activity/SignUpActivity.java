@@ -19,7 +19,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.api.LoginApi;
-import vn.edu.ecomapp.model.dto.MessageDto;
+import vn.edu.ecomapp.dto.message.MessageResponse;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.util.AlertDialogMessage;
 
@@ -69,9 +69,9 @@ public class SignUpActivity extends AppCompatActivity {
             password = Objects.requireNonNull(editTextPassword.getEditText()).getText().toString().trim();
             confirmPassword = Objects.requireNonNull(editTextConfirmPassword.getEditText()).getText().toString().trim();
             if(password.equals(confirmPassword)) {
-                loginApi.createAccountUser(email, password).enqueue(new Callback<MessageDto>() {
+                loginApi.createAccountUser(email, password).enqueue(new Callback<MessageResponse>() {
                     @Override
-                    public void onResponse(@NonNull Call<MessageDto> call, @NonNull Response<MessageDto> response) {
+                    public void onResponse(@NonNull Call<MessageResponse> call, @NonNull Response<MessageResponse> response) {
                         assert response.body() != null;
                         AlertDialogMessage.showAlertMessage(SignUpActivity.this, response.body().getTitle(), response.body().getMessage());
                         if(response.body().getStatus().equals("SUCCESS")) {
@@ -83,7 +83,7 @@ public class SignUpActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<MessageDto> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<MessageResponse> call, @NonNull Throwable t) {
                         AlertDialogMessage.showAlertMessage(SignUpActivity.this, "Sign Up Message", t.getMessage());
 //                            Intent intent = new Intent(SignUpActivity.this, VerifyAccountActivity.class);
 //                            intent.putExtra("email", email);
