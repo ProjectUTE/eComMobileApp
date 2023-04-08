@@ -1,8 +1,9 @@
-package vn.edu.ecomapp.util;
+package vn.edu.ecomapp.util.prefs;
 
 import android.content.SharedPreferences;
 
-import vn.edu.ecomapp.model.login.Login;
+import vn.edu.ecomapp.dto.login.Login;
+import vn.edu.ecomapp.util.Constants;
 
 public class DataLoginManager {
    private final SharedPreferences prefs;

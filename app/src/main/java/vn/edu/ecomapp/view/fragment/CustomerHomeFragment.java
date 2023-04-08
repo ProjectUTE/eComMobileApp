@@ -1,7 +1,9 @@
 package vn.edu.ecomapp.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,13 +37,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.ecomapp.R;
+import vn.edu.ecomapp.api.AccessTokenApi;
 import vn.edu.ecomapp.api.CategoryApi;
 import vn.edu.ecomapp.api.ProductApi;
+import vn.edu.ecomapp.dto.login.LoginRequest;
+import vn.edu.ecomapp.dto.login.LoginResponse;
 import vn.edu.ecomapp.model.Category;
 import vn.edu.ecomapp.model.Product;
 import vn.edu.ecomapp.model.Slide;
-import vn.edu.ecomapp.services.oauth2.GoogleAuthManager;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
+import vn.edu.ecomapp.services.oauth2.GoogleAuthManager;
+import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.prefs.TokenManager;
 import vn.edu.ecomapp.view.activity.ProductDetailActivity;
 import vn.edu.ecomapp.view.adapter.CategoryAdapter;
 import vn.edu.ecomapp.view.adapter.PopularProductAdapter;
@@ -64,15 +71,26 @@ public class CustomerHomeFragment extends Fragment{
     ImageView avatar;
     TextInputLayout search;
 
+    TokenManager tokenManager;
+    SharedPreferences prefs;
+
     private void getAccount() {
         googleSignInAccount = GoogleAuthManager.getGoogleSignInAccount(getContext());
     }
 
     private void initApi() {
-        categoryApi = RetrofitClient.getRetrofit().create(CategoryApi.class);
+        if(prefs != null) {
+            tokenManager = TokenManager.getInstance(prefs);
+        }
+        categoryApi = RetrofitClient.createApiWithAuth(CategoryApi.class, tokenManager);
         productApi = RetrofitClient.getRetrofit().create(ProductApi.class);
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+         prefs = context.getSharedPreferences(Constants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE);
+    }
 
     @Nullable
     @Override

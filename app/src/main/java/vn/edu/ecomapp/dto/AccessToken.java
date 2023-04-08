@@ -1,7 +1,7 @@
-package vn.edu.ecomapp.model;
+package vn.edu.ecomapp.dto;
 
 public class AccessToken {
-    String accessToken, refreshToken, expired;
+    String accessToken, refreshToken;
 
     public String getAccessToken() {
         return accessToken;
@@ -17,13 +17,5 @@ public class AccessToken {
 
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
-    }
-
-    public String getExpired() {
-        return expired;
-    }
-
-    public void setExpired(String expired) {
-        this.expired = expired;
     }
 }

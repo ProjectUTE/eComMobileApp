@@ -2,6 +2,7 @@ package vn.edu.ecomapp.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import vn.edu.ecomapp.R;
+import vn.edu.ecomapp.api.AccessTokenApi;
+import vn.edu.ecomapp.dto.login.LoginRequest;
+import vn.edu.ecomapp.dto.login.LoginResponse;
 import vn.edu.ecomapp.model.Order;
+import vn.edu.ecomapp.retrofit.RetrofitClient;
+import vn.edu.ecomapp.util.Constants;
 import vn.edu.ecomapp.view.adapter.OrderAdapter;
 import vn.edu.ecomapp.view.adapter.listener.OnItemClickListener;
 
@@ -58,6 +67,7 @@ public class CustomerHistoryFragment extends Fragment {
         initializeComponents(view);
         initData();
         loadOrderRecyclerView();
+
     }
 
     private void loadOrderRecyclerView() {

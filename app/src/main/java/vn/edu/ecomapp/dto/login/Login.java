@@ -1,8 +1,16 @@
-package vn.edu.ecomapp.model.login;
+package vn.edu.ecomapp.dto.login;
 
 public class Login {
     String email, password;
     boolean isRemember;
+
+    public  Login() {}
+
+    public Login(String email, String password, boolean isRemember) {
+        this.email = email;
+        this.password = password;
+        this.isRemember = isRemember;
+    }
 
     public String getEmail() {
         return email;

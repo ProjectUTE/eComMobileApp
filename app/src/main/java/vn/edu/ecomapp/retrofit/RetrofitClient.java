@@ -4,12 +4,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import vn.edu.ecomapp.util.TokenManager;
+import vn.edu.ecomapp.util.prefs.TokenManager;
 
 public class RetrofitClient {
-    private static final String BASE_URL = "http://192.168.137.1:8081/api/";
+//    private static final String BASE_URL = "http://192.168.137.1:8081/api/";
+    private static final String BASE_URL = "https://3fdb-42-117-51-9.ngrok-free.app/api/";
     private final static OkHttpClient client = buildClient();
-    private final static Retrofit retrofit = buildRetrofit(client);
+    private final static Retrofit retrofit = buildRetrofit();
 
     private static OkHttpClient buildClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
@@ -28,10 +29,10 @@ public class RetrofitClient {
         return retrofit;
     }
 
-    private static Retrofit buildRetrofit(OkHttpClient client) {
+    private static Retrofit buildRetrofit() {
         return  new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(client)
+                .client(RetrofitClient.client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -44,13 +45,9 @@ public class RetrofitClient {
     // Create api with authorization
     public static <T> T createApiWithAuth(Class<T> service, final TokenManager tokenManager) {
          OkHttpClient newClient = client.newBuilder().addInterceptor(chain -> {
-
              Request request = chain.request();
-
              Request.Builder builder = request.newBuilder();
-
-             String accessToken = tokenManager.getAccessToken().getRefreshToken();
-
+             String accessToken = tokenManager.getAccessToken().getAccessToken();
              if(accessToken != null){
                  builder.addHeader("Authorization", "Bearer " + accessToken);
              }
