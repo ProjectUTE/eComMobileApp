@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_50"
     xmlns:app="http://schemas.android.com/apk/res-auto">
         <ScrollView
             android:layout_width="match_parent"
@@ -16,24 +17,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 >
-                <EditText
-                    android:background="@drawable/edit_text_corner_100"
-                    android:padding="13dp"
-                    android:layout_marginTop="20dp"
+                <TextView
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/heading"
+                    android:text="It's a great day for coffee"
+                    android:layout_marginTop="@dimen/margin_20"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="@dimen/text_size_18"
+                    />
+
+                <EditText
+                    android:id="@+id/searchProduct"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Search product..."
-                    android:id="@+id/searchProduct"
                     android:layout_marginHorizontal="10dp"
-                    android:textColor="#555555"
-                    android:fontFamily="@font/open_sans"
+                    android:layout_marginTop="@dimen/margin_20"
+                    android:background="@drawable/edit_text_corner"
                     android:drawableRight="@drawable/search_24"
-                    android:textSize="14sp"
+                    android:elevation="3dp"
+                    android:fontFamily="@font/open_sans"
+                    android:hint="Find your favorite coffee"
                     android:inputType="text"
-                    />
+                    android:padding="@dimen/padding_10"
+                    android:textColor="#555555"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/heading"
+                    tools:ignore="TouchTargetSizeCheck" />
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/categoryContainer"
                     app:layout_constraintTop_toBottomOf="@id/searchProduct"
@@ -43,27 +58,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     >
-                    <TextView
-                        android:layout_marginHorizontal="10dp"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/open_sans_bold"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        android:text="Categories"
-                        android:textAlignment="center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/text_view_title"
-                        />
                     <androidx.recyclerview.widget.RecyclerView
                         android:layout_marginTop="10dp"
                         android:id="@+id/recyclerViewCategories"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/text_view_title"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        tools:listitem="@layout/list_category_item_horizontal"
+                        tools:listitem="@layout/list_category_item"
                         />
                 </androidx.constraintlayout.widget.ConstraintLayout>
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -74,22 +77,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     >
-                    <TextView
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginHorizontal="10dp"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/open_sans_bold"
-                        app:layout_constraintStart_toStartOf="parent"
-                        android:text="Products"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/productTitle"
-                        />
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/productRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/productTitle"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         tools:listitem="@layout/list_product_item" />

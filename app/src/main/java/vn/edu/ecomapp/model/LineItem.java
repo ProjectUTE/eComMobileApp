@@ -3,10 +3,26 @@ package vn.edu.ecomapp.model;
 public class LineItem {
 
     String id;
-    Product product;
+    String name, productId;
     int quantity;
     int amount;
     int price;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
 
     public int getPrice() {
         return price;
@@ -22,14 +38,6 @@ public class LineItem {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public int getQuantity() {

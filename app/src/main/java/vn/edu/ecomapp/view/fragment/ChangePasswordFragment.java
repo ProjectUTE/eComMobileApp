@@ -13,10 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import vn.edu.ecomapp.R;
+import vn.edu.ecomapp.util.FragmentManager;
 
 public class ChangePasswordFragment extends Fragment {
 
-    private Toolbar toolbar;
     TextView appBarTitle;
 
     ImageView backButton;
@@ -35,14 +35,12 @@ public class ChangePasswordFragment extends Fragment {
     }
 
     private void initComponents(View view) {
-        toolbar = view.findViewById(R.id.toolbar);
         backButton = view.findViewById(R.id.backButton);
 
         appBarTitle = view.findViewById(R.id.appBarTitle);
         appBarTitle.setText("Change password");
         backButton.setOnClickListener(view1 -> {
-//            FragmentManager.nextFragment(requireActivity(), new CustomerAccountFragment(), R.id.fragmentContainer, null);
-            getActivity().getSupportFragmentManager().popBackStack();
+            FragmentManager.backFragment(requireActivity());
         });
     }
 

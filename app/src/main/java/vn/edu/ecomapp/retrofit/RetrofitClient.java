@@ -4,11 +4,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import vn.edu.ecomapp.util.Constants;
 import vn.edu.ecomapp.util.prefs.TokenManager;
 
 public class RetrofitClient {
 //    private static final String BASE_URL = "http://192.168.137.1:8081/api/";
-    private static final String BASE_URL = "https://3fdb-42-117-51-9.ngrok-free.app/api/";
+    private static final String BASE_URL = Constants.BASE_URL + "/api/";
     private final static OkHttpClient client = buildClient();
     private final static Retrofit retrofit = buildRetrofit();
 

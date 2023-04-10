@@ -1,12 +1,13 @@
 package vn.edu.ecomapp.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,20 +29,34 @@ import com.paypal.checkout.order.PurchaseUnit;
 import com.paypal.checkout.paymentbutton.PayPalButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.model.Product;
+import vn.edu.ecomapp.dto.Cart;
+import vn.edu.ecomapp.model.LineItem;
+import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.CurrencyFormat;
+import vn.edu.ecomapp.util.FragmentManager;
+import vn.edu.ecomapp.util.prefs.CartManager;
 import vn.edu.ecomapp.view.adapter.CartAdapter;
 
 public class CustomerCartFragment  extends Fragment {
 
     RecyclerView recyclerViewCart;
-    List<Product> products;
-
-    Button checkoutButton;
+    TextView checkoutButton, tvtotalItems, btnPlus, btnMinus, tvLineItemid;
     PayPalButton payPalButton;
+    CartManager cartManager;
+    Cart cart;
+
+    String lineItemId;
+
     private static final  String CLIENT_ID = "ASkkqIO3hfOoZfMWh5u6wF1a3cp2jAzTaD0e1eN8yhE4CMtsJNKewg8ah7xTqhZRGoXfjaTARkQRDz75";
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        cartManager = CartManager
+                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CART, Context.MODE_PRIVATE));
+    }
 
     @Nullable
     @Override
@@ -62,14 +77,24 @@ public class CustomerCartFragment  extends Fragment {
                  "vn.edu.ecomapp://paypalpay"
         ));
         initComponents(view);
-        initializeData();
         loadRecyclerViewCart(view);
+        loadSummary();
+    }
+
+    private void loadSummary() {
+        if(cart == null) return;
+        tvtotalItems.setText(CurrencyFormat.VietnameseCurrency(cart.getTotalItems()));
     }
 
     @SuppressLint("LongLogTag")
     private void initComponents(View view) {
         checkoutButton = view.findViewById(R.id.checkoutButton);
         payPalButton = view.findViewById(R.id.payPalButton);
+        tvtotalItems = view.findViewById(R.id.totalItem);
+        cart = cartManager.getCart();
+
+        checkoutButton.setOnClickListener(view1 -> FragmentManager.nextFragment(requireActivity(), new SelectPaymentFragment()));
+
         payPalButton.setup(
                 createOrderActions -> {
             ArrayList<PurchaseUnit> purchaseUnits = new ArrayList<>();
@@ -97,69 +122,66 @@ public class CustomerCartFragment  extends Fragment {
         );
 
         payPalButton.setPaymentButtonEligibilityStatusChanged(paymentButtonEligibilityStatus -> Log.i("PaymentButtonEligibility", String.format("paymentButton : %s", paymentButtonEligibilityStatus)));
-
-//        checkoutButton.setOnClickListener(view2 -> {
-//            String amounts = "100";
-//            String currency = "USD";
-//            String title = "Checkout";
-//            PayPalPayment payment = new PayPalPayment(new BigDecimal(amounts), currency, title, PayPalPayment.PAYMENT_INTENT_SALE);
-//            Intent intent = PayPalManager.getIntentPayPal(requireActivity(), payment);
-//            startActivityForResult(intent, REQUEST_CODE);
-//        });
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
     }
-//
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == REQUEST_CODE) {
-//            if(resultCode == Activity.RESULT_OK) {
-//                PaymentConfirmation config = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
-//                if(config != null) {
-//                    try {
-//                        String paymentDetails = config.toJSONObject().toString(4);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                        Toast.makeText(requireActivity(), e.toString(), Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            } else if (resultCode == Activity.RESULT_CANCELED) {
-//                Toast.makeText(requireActivity(), "Payment has been canceled", Toast.LENGTH_SHORT).show();
-//            } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
-//                Toast.makeText(requireActivity(), "Error occurred", Toast.LENGTH_SHORT).show();
-//            }
-//        } else if (requestCode == REQUEST_CODE_FUTURE_PAYMENT) {
-//            if(resultCode == Activity.RESULT_OK) {
-//                PayPalAuthorization authorization = data
-//                        .getParcelableExtra(PayPalFuturePaymentActivity.EXTRA_RESULT_AUTHORIZATION);
-//                try {
-//                    Log.d("CustomerCart", authorization.toJSONObject().toString());
-//                }catch (Exception e) {
-//                    Toast.makeText(requireActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        }
-//    }
 
-    private void loadRecyclerViewCart(View view) {
-        recyclerViewCart = view.findViewById(R.id.recycler_view_cart);
-    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        recyclerViewCart.setLayoutManager(linearLayoutManager);
-        recyclerViewCart.setHasFixedSize(true);
-        CartAdapter cartAdapter = new CartAdapter(getContext(), products);
-        recyclerViewCart.setAdapter(cartAdapter);
+    private void updateCart() {
+        cart = cartManager.getCart();
     }
+    @SuppressLint("NotifyDataSetChanged")
+    private void loadRecyclerViewCart(View view) {
+        if(cart == null) return;
+        recyclerViewCart = view.findViewById(R.id.recycler_view_cart);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerViewCart.setLayoutManager(linearLayoutManager);
+        CartAdapter cartAdapter = new CartAdapter(getContext(), cart.getLineItems());
+        recyclerViewCart.setAdapter(cartAdapter);
+        cartAdapter.setOnItemClickListener((position, view1) -> {
+            btnPlus = view1.findViewById(R.id.button_plus);
+            btnMinus = view1.findViewById(R.id.button_minus);
+            tvLineItemid = view1.findViewById(R.id.lineItemId);
+            lineItemId = tvLineItemid.getText().toString();
 
-    private void initializeData() {
-        this.products = new ArrayList<>();
-        this.products.add(new Product("Coffee", 14000));
-        this.products.add(new Product("Coffee 1", 15000));
-        this.products.add(new Product("Coffee 2", 16000));
-        this.products.add(new Product("Coffee 3", 17000));
-        this.products.add(new Product("Coffee 4", 18000));
+            btnPlus.setOnClickListener(view2 -> {
+               Log.d("CART", "Plus button");
+               if(cart == null) return;
+               LineItem itemInCart = null;
+               LineItem itemExtra = new LineItem();
+               for (LineItem i : cart.getLineItems()) {
+                    if(i.getId().equals(lineItemId)) {
+                        itemInCart = i;
+                        break;
+                    }
+               }
+               if(itemInCart == null) return;
+                int quantity = 1;
+                int price = itemInCart.getPrice();
+                int total = quantity * price;
+                itemExtra.setId(lineItemId);
+                itemExtra.setQuantity(1);
+                itemExtra.setProductId(itemInCart.getProductId());
+                itemExtra.setPrice(price);
+                itemExtra.setAmount(total);
+                cart.addLineItem(itemExtra);
+                cartManager.saveCart(cart);
+                cartAdapter.notifyDataSetChanged();
+                updateCart();
+                loadSummary();
+            });
+
+            btnMinus.setOnClickListener(view3 -> {
+                Log.d("CART", "Minus button");
+                cart.removeLineItem(lineItemId);
+                cartAdapter.notifyDataSetChanged();
+                updateCart();
+                loadSummary();
+            });
+
+
+        });
     }
 }

@@ -2,15 +2,14 @@ package vn.edu.ecomapp.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,7 +26,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,43 +36,49 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.api.AccessTokenApi;
 import vn.edu.ecomapp.api.CategoryApi;
 import vn.edu.ecomapp.api.ProductApi;
-import vn.edu.ecomapp.dto.login.LoginRequest;
-import vn.edu.ecomapp.dto.login.LoginResponse;
+import vn.edu.ecomapp.api.ProfileApi;
+import vn.edu.ecomapp.api.SlideApi;
 import vn.edu.ecomapp.model.Category;
+import vn.edu.ecomapp.model.Customer;
 import vn.edu.ecomapp.model.Product;
 import vn.edu.ecomapp.model.Slide;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.services.oauth2.GoogleAuthManager;
 import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.FragmentManager;
+import vn.edu.ecomapp.util.prefs.CategoryManager;
+import vn.edu.ecomapp.util.prefs.CustomerManager;
 import vn.edu.ecomapp.util.prefs.TokenManager;
-import vn.edu.ecomapp.view.activity.ProductDetailActivity;
 import vn.edu.ecomapp.view.adapter.CategoryAdapter;
 import vn.edu.ecomapp.view.adapter.PopularProductAdapter;
 import vn.edu.ecomapp.view.adapter.SliderAdapter;
 import vn.edu.ecomapp.view.adapter.decorator.SpacesItemDecoration;
 
 public class CustomerHomeFragment extends Fragment{
-
     List<Category> categories;
     List<Product> popularProducts;
     List<Slide> slides;
     RecyclerView recyclerView, recyclerViewPopularProduct;
     CategoryApi categoryApi;
     ProductApi productApi;
+    SlideApi slideApi;
     ViewPager2 sliderContainer;
     Handler sliderHandler = new Handler();
     GoogleSignInAccount googleSignInAccount;
-
     TextView displayName;
     ImageView avatar;
-    TextInputLayout search;
-
+    EditText search;
     TokenManager tokenManager;
     SharedPreferences prefs;
 
+    BottomNavigationView bottomNavigationView;
+    CategoryManager categoryManager;
+    CustomerManager customerManager;
+    Customer profile;
+
+    ProfileApi profileApi;
     private void getAccount() {
         googleSignInAccount = GoogleAuthManager.getGoogleSignInAccount(getContext());
     }
@@ -82,14 +87,21 @@ public class CustomerHomeFragment extends Fragment{
         if(prefs != null) {
             tokenManager = TokenManager.getInstance(prefs);
         }
+        slideApi = RetrofitClient.createApiWithAuth(SlideApi.class, tokenManager);
         categoryApi = RetrofitClient.createApiWithAuth(CategoryApi.class, tokenManager);
         productApi = RetrofitClient.getRetrofit().create(ProductApi.class);
+        profileApi= RetrofitClient.createApiWithAuth(ProfileApi.class, tokenManager);
+
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
          prefs = context.getSharedPreferences(Constants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE);
+         categoryManager = CategoryManager
+                 .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CATEGORY, Context.MODE_PRIVATE));
+         customerManager = CustomerManager
+                 .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CUSTOMER, Context.MODE_PRIVATE));
     }
 
     @Nullable
@@ -116,50 +128,83 @@ public class CustomerHomeFragment extends Fragment{
         displayName = view.findViewById(R.id.profileName);
         avatar = view.findViewById(R.id.avatar);
         search = view.findViewById(R.id.search);
-
+        bottomNavigationView = requireActivity().findViewById(R.id.bottomNav);
     }
-
     private void loadInfoAccount() {
-        if(googleSignInAccount == null)
-            return;
+        profileApi.geCustomerById(customerManager.getCustomer().getCustomerId())
+                .enqueue(new Callback<Customer>() {
+                    @Override
+                    public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
+                        if (response.body() == null) return;
+                        profile = response.body();
+                        String avatarStr = "";
+                        if(profile.getAvatar() == null || profile.getAvatar().equals("")) {
+                            if(googleSignInAccount == null) avatarStr = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+                            else {
+                                avatarStr = Objects.requireNonNull(googleSignInAccount.getPhotoUrl()).toString();
+                            }
+                        }
+                        else {
+                            avatarStr = profile.getAvatar().replace(Constants.BASE_URL_LOCAL, Constants.BASE_URL);
+                        }
+                        profile.setAvatar(avatarStr);
+                        customerManager.removeCustomer();
+                        customerManager.saveCustomer(profile);
 
-        if(!Objects.requireNonNull(googleSignInAccount.getDisplayName()).isEmpty())
-            displayName.setText(googleSignInAccount.getDisplayName());
+                        displayName.setText(profile.getDisplayName());
+                        Glide.with(requireContext())
+                            .load(profile.getAvatar())
+                            .apply(RequestOptions.bitmapTransform(new RoundedCorners(1000)))
+                            .into(avatar);
+                    }
 
-        Uri photoUrl = googleSignInAccount.getPhotoUrl();
-        if(photoUrl != null)
-            Glide.with(requireContext())
-                    .load(photoUrl)
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(100)))
-                    .into(avatar);
+                    @Override
+                    public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
+                        Log.d("TAG", t.getMessage());
+                    }
+                });
+
     }
-
     private void loadSlides(View view) {
-        sliderContainer = view.findViewById(R.id.sliderContainer);
-        SliderAdapter sliderAdapter = new SliderAdapter(getContext(), slides, sliderContainer);
-        sliderContainer.setAdapter(sliderAdapter);
-        sliderContainer.setClipToPadding(false);
-        sliderContainer.setClipChildren(false);
-        sliderContainer.setOffscreenPageLimit(5);
-        sliderContainer.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
-
-        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
-        compositePageTransformer.addTransformer(new MarginPageTransformer(30));
-        compositePageTransformer.addTransformer((page, position) -> {
-            float r = 1 - Math.abs(position);
-            page.setScaleY(0.85f + r*0.15f);
-        });
-        sliderContainer.setPageTransformer(compositePageTransformer);
-
-        sliderContainer.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+        slideApi.getAllSlide().enqueue(new Callback<List<Slide>>() {
             @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
+            public void onResponse(@NonNull Call<List<Slide>> call, @NonNull Response<List<Slide>> response) {
+               if(response.body() == null)  return;
+               slides = response.body();
+               sliderContainer = view.findViewById(R.id.sliderContainer);
+               SliderAdapter sliderAdapter = new SliderAdapter(getContext(), slides, sliderContainer);
+               sliderContainer.setAdapter(sliderAdapter);
+               sliderContainer.setClipToPadding(false);
+               sliderContainer.setClipChildren(false);
+               sliderContainer.setOffscreenPageLimit(5);
+               sliderContainer.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+                CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+                compositePageTransformer.addTransformer(new MarginPageTransformer(30));
+                compositePageTransformer.addTransformer((page, position) -> {
+                    float r = 1 - Math.abs(position);
+                    page.setScaleY(0.85f + r*0.15f);
+                });
+                sliderContainer.setPageTransformer(compositePageTransformer);
 
-                sliderHandler.removeCallbacks(sliderRunnable);
-                sliderHandler.postDelayed(sliderRunnable, 2000);
+                sliderContainer.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                    @Override
+                    public void onPageSelected(int position) {
+                        super.onPageSelected(position);
+
+                        sliderHandler.removeCallbacks(sliderRunnable);
+                        sliderHandler.postDelayed(sliderRunnable, 2000);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Slide>> call, @NonNull Throwable t) {
+                Log.d("TAG", t.getMessage());
             }
         });
+
+
+
     }
 
     private final Runnable sliderRunnable = new Runnable() {
@@ -177,10 +222,7 @@ public class CustomerHomeFragment extends Fragment{
         PopularProductAdapter popularProductAdapter = new PopularProductAdapter(getContext(), this.popularProducts);
         recyclerViewPopularProduct.setAdapter(popularProductAdapter);
         recyclerViewPopularProduct.addItemDecoration(new SpacesItemDecoration(20));
-        popularProductAdapter.setOnItemClickListener((position, view1) -> {
-            Intent intent = new Intent(getContext(), ProductDetailActivity.class);
-            startActivity(intent);
-        });
+        popularProductAdapter.setOnItemClickListener((position, view1) -> FragmentManager.nextFragment(requireActivity(), new ProductDetailFragment()));
     }
 
 
@@ -197,7 +239,14 @@ public class CustomerHomeFragment extends Fragment{
                 CategoryAdapter categoryAdapter = new CategoryAdapter(getContext(), categories);
                 recyclerView.setAdapter(categoryAdapter);
 //                Set click in item
-                categoryAdapter.setOnItemClickListener((position, view1) -> Log.d("Home activity", String.format("===============%d================", position)));
+                categoryAdapter.setOnItemClickListener((position, view1) -> {
+                    TextView categoryId = view1.findViewById(R.id.categoryId);
+                    if(categoryId == null)  return;
+                    Log.d("Category", categoryId.getText().toString());
+                    String id = categoryId.getText().toString();
+                    categoryManager.saveCategoryId(id);
+                    bottomNavigationView.setSelectedItemId(R.id.food);
+                });
                 recyclerView.addItemDecoration(new SpacesItemDecoration(20));
             }
             @Override
@@ -209,23 +258,8 @@ public class CustomerHomeFragment extends Fragment{
     }
 
     private void initializeData() {
-//        Categories
         categories = new ArrayList<>();
-
-//        Products
-        this.popularProducts = new ArrayList<>();
-        this.popularProducts.add(new Product("Coffee", 14000));
-        this.popularProducts.add(new Product("Coffee 1", 15000));
-        this.popularProducts.add(new Product("Coffee 2", 16000));
-        this.popularProducts.add(new Product("Coffee 3", 17000));
-        this.popularProducts.add(new Product("Coffee 4", 18000));
-
-//        Slides
         slides = new ArrayList<>();
-        slides.add(new Slide("https://file.hstatic.net/1000075078/file/banyeu_desktop_5c0125b0ec644df3b054249c55eb986d.jpg"));
-        slides.add(new Slide("https://file.hstatic.net/1000075078/file/thomngon_desktop_e9cab329b26d4940af18c55d4cd4421c.jpg"));
-        slides.add(new Slide("https://file.hstatic.net/1000075078/file/freeship_desktop_5abfba8de1cf412fb960741a3700444a.jpg"));
-        slides.add(new Slide("https://file.hstatic.net/1000075078/file/thomngon_desktop_e9cab329b26d4940af18c55d4cd4421c.jpg"));
-        slides.add(new Slide("https://file.hstatic.net/1000075078/file/ngaymoi_desktop_d9a24d002be449338a97d0448d0bd3fc.jpg"));
+        popularProducts = new ArrayList<>();
     }
 }

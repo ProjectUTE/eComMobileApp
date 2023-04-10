@@ -39,12 +39,13 @@ public class LoginController {
             @Override
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                 if(response.body() != null) {
-                    Customer customer = new Customer();
-                    customer.setEmail(response.body().getEmail());
-                    customerManager.saveCustomer(customer);
                     AccessToken accessToken = response.body().getToken();
-                    if(accessToken != null)
+                    if(accessToken != null) {
                         tokenManager.saveToken(accessToken);
+                    }
+                    Customer customer = new Customer();
+                    customer.setCustomerId(response.body().getCustomerId());
+                    customerManager.saveCustomer(customer);
                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     goToPanelActivity();
                 } else {

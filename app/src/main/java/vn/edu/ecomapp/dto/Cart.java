@@ -6,51 +6,66 @@ import java.util.List;
 import vn.edu.ecomapp.model.LineItem;
 
 public class Cart {
-    List<LineItem> lineItems;
-    int itemsTotal;
+    List<LineItem> lineItems = new ArrayList<>();
 
-
-    int delivery;
-
-    int total;
-
-    public Cart() {
-        lineItems = new ArrayList<>();
-        itemsTotal = 0;
-        total = 0;
-        delivery = 0;
+    public int getCartItemsCount() {
+        if(lineItems == null) return 0;
+        return  lineItems.size();
     }
 
     public int getDelivery() {
-        return delivery;
-    }
-
-    public void setDelivery(int delivery) {
-        this.delivery = delivery;
-    }
-
-    public List<LineItem> getLineItems() {
-        return lineItems;
-    }
-
-    public void setLineItems(List<LineItem> lineItems) {
-        this.lineItems = lineItems;
-    }
-
-    public int getItemsTotal() {
-        return itemsTotal;
-    }
-
-    public void setItemsTotal(int itemsTotal) {
-        this.itemsTotal = itemsTotal;
+        return 0;
     }
 
     public int getTotal() {
-        return total;
+        return getTotalItems() + getDelivery();
     }
 
-    public void setTotal(int total) {
-        this.total = total;
+    public List<LineItem> getLineItems() {
+        return  lineItems;
     }
 
+    public int getTotalItems() {
+        int totalItems = 0;
+        for (LineItem item : lineItems) {
+            totalItems += item.getAmount();
+        }
+        return totalItems;
+    }
+
+    public void addLineItem(LineItem item) {
+        int incomingItemTotal = item.getQuantity() * item.getPrice();
+        if(incomingItemTotal != item.getAmount()) {
+            item.setAmount(incomingItemTotal);
+        }
+
+        for(int i = 0; i < lineItems.size(); i++)  {
+           if(lineItems.get(i).getProductId().equals(item.getProductId())) {
+               int quantity = lineItems.get(i).getQuantity() + item.getQuantity();
+               int itemTotal = lineItems.get(i).getPrice() * quantity;
+               lineItems.get(i).setQuantity(quantity);
+               lineItems.get(i).setAmount(itemTotal);
+                return;
+           }
+       }
+       lineItems.add(item);
+    }
+
+    public void removeLineItem(String id) {
+        int positionExist = -1;
+        for(int i = 0; i < lineItems.size(); i++) {
+            if (lineItems.get(i).getId().equals(id)) {
+                positionExist = i;
+                break;
+            }
+        }
+        if(positionExist == -1) return;
+        int currentQuantity = lineItems.get(positionExist).getQuantity();
+        int price = lineItems.get(positionExist).getPrice();
+        if(currentQuantity > 1) {
+            int incomingQuantity = currentQuantity - 1;
+            lineItems.get(positionExist).setQuantity(incomingQuantity);
+            lineItems.get(positionExist).setAmount(incomingQuantity * price);
+        }
+    }
 }

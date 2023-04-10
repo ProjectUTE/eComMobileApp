@@ -1,8 +1,8 @@
 package vn.edu.ecomapp.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,22 +21,48 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
+import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import vn.edu.ecomapp.R;
+import vn.edu.ecomapp.api.ProfileApi;
+import vn.edu.ecomapp.model.Customer;
+import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.services.oauth2.GoogleAuthManager;
+import vn.edu.ecomapp.util.Constants;
 import vn.edu.ecomapp.util.FragmentManager;
+import vn.edu.ecomapp.util.prefs.CartManager;
+import vn.edu.ecomapp.util.prefs.CustomerManager;
+import vn.edu.ecomapp.util.prefs.TokenManager;
 import vn.edu.ecomapp.view.activity.LoginActivity;
 
 public class CustomerAccountFragment extends Fragment {
 
+    TextView tvPhone, tvCustomerId;
     Button changePasswordButton, editProfileButton, logoutButton;
     TextView email, displayName;
     ImageView avatar;
-
     GoogleSignInClient gsc;
     GoogleSignInAccount account;
+    CartManager cartManager;
+    CustomerManager customerManager;
+    TokenManager tokenManager;
+    Customer profile;
+    ProfileApi profileApi;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        cartManager = CartManager
+                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CART, Context.MODE_PRIVATE));
+        customerManager = CustomerManager
+                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CUSTOMER, Context.MODE_PRIVATE));
+        tokenManager = TokenManager
+                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
+    }
 
-
-     @Nullable
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_customer_account, null) ;
@@ -52,16 +78,42 @@ public class CustomerAccountFragment extends Fragment {
     }
 
     private void loadInfo() {
-         if(account != null) {
-             email.setText(account.getEmail());
-             displayName.setText(account.getDisplayName());
-        Uri photoUrl = account.getPhotoUrl();
-        if(photoUrl != null)
-            Glide.with(requireContext())
-                    .load(photoUrl)
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(100)))
-                    .into(avatar);
-         }
+        profileApi.geCustomerById(customerManager.getCustomer().getCustomerId())
+                        .enqueue(new Callback<Customer>() {
+                            @Override
+                            public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
+                                if(response.body() == null) return;
+                                profile = response.body();
+                                String avatarStr = "";
+                                if(profile.getAvatar() == null || profile.getAvatar().equals("")) {
+                                    if(account == null) avatarStr = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+                                    else {
+                                        avatarStr = Objects.requireNonNull(account.getPhotoUrl()).toString();
+                                    }
+                                }
+                                else {
+                                    avatarStr = profile.getAvatar().replace(Constants.BASE_URL_LOCAL, Constants.BASE_URL);
+                                }
+
+                                profile.setAvatar(avatarStr);
+                                customerManager.removeCustomer();
+                                customerManager.saveCustomer(profile);
+                                displayName.setText(profile.getDisplayName());
+                                email.setText(profile.getEmail());
+                                tvCustomerId.setText(profile.getCustomerId());
+                                profile.setAvatar(profile.getAvatar());
+                                 Glide.with(requireContext())
+                                    .load(profile.getAvatar())
+                                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(1000)))
+                                    .into(avatar);
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
+
+                            }
+                        });
+
     }
 
     private void initGoogleService() {
@@ -69,14 +121,19 @@ public class CustomerAccountFragment extends Fragment {
          account = GoogleAuthManager.getGoogleSignInAccount(getContext());
     }
 
+    @SuppressLint("SetTextI18n")
     private void initComponents(View view) {
          // get element
+
         email = view.findViewById(R.id.text_view_email);
         displayName = view.findViewById(R.id.text_view_fullname);
         avatar = view.findViewById(R.id.image_view_avatar);
+        tvCustomerId = view.findViewById(R.id.customerId);
+        tvPhone = view.findViewById(R.id.phone);
         changePasswordButton = view.findViewById(R.id.changePassword);
         editProfileButton = view.findViewById(R.id.editProfileButton);
         logoutButton = view.findViewById(R.id.logoutButton);
+        profileApi = RetrofitClient.createApiWithAuth(ProfileApi.class, tokenManager);
 
 //         Handle click event
          changePasswordButton.setOnClickListener(view1 -> {
@@ -93,8 +150,13 @@ public class CustomerAccountFragment extends Fragment {
     }
 
     private void signOut() {
-        if(gsc != null)
+        if(cartManager != null) {
+            cartManager.removeCart();
+            customerManager.removeCustomer();
+        }
+        if(gsc != null) {
             gsc.signOut().addOnCompleteListener(task -> goToLoginForm());
+        }
     }
 
     private void goToLoginForm() {
@@ -103,6 +165,6 @@ public class CustomerAccountFragment extends Fragment {
     }
 
     private void loadFragment(Fragment fragment) {
-        FragmentManager.nextFragment(requireActivity(), fragment, R.id.fragmentContainer, null);
+        FragmentManager.nextFragment(requireActivity(), fragment);
     }
 }

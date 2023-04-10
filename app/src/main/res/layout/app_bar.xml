@@ -15,6 +15,7 @@
         android:layout_marginRight="10dp"
         />
         <TextView
+            android:fontFamily="@font/open_sans"
             android:id="@+id/appBarTitle"
             android:textColor="@color/white"
             android:textSize="16sp"

@@ -10,43 +10,31 @@
     android:background="@drawable/cart_item_background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/imageView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="TouchTargetSizeCheck" />
-
     <ImageView
-        android:layout_marginLeft="30dp"
         android:id="@+id/imageView"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:src="@drawable/coffee"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/text_view_title"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/open_sans_bold"
-        android:layout_marginLeft="30dp"
         android:text="Coffee"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:paddingBottom="10dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@id/text_view_title" >
+            app:layout_constraintEnd_toEndOf="parent"
+            >
 
             <TextView
                 android:layout_width="30dp"
@@ -82,23 +70,17 @@
                 tools:ignore="TouchTargetSizeCheck" />
         </LinearLayout>
     <TextView
-        android:id="@+id/text_view_total_each_item"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/removeItemButton"
-        android:layout_marginBottom="@dimen/margin_10"
-        android:layout_marginRight="20dp"
+        app:layout_constraintStart_toEndOf="@id/imageView"
+        app:layout_constraintTop_toBottomOf="@id/text_view_title"
+        android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0 VND"
+        android:text="14,000đ"
+        android:textSize="16sp"
         />
-    <ImageView
-        android:layout_marginRight="@dimen/margin_10"
-        android:id="@+id/removeItemButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:src="@drawable/trash"
+    <TextView
+        android:id="@+id/lineItemId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>

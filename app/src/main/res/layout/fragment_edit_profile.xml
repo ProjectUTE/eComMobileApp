@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_10"
-            android:text="Upload avater"
+            android:text="Upload avatar"
             android:textAllCaps="false"
             android:textSize="13dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,12 +44,36 @@
             app:layout_constraintTop_toBottomOf="@id/avatar"
             tools:ignore="TextSizeCheck" />
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/displayName"
+            android:id="@+id/email"
+            android:enabled="false"
             app:layout_constraintTop_toBottomOf="@id/uploadAvatar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="@dimen/margin_10"
             android:layout_marginTop="@dimen/margin_20"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:boxBackgroundMode="none">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/edit_text_corner_100"
+                android:drawablePadding="@dimen/padding_10"
+                android:fontFamily="@font/open_sans"
+                android:hint="Email"
+                android:inputType="text"
+                android:padding="10dp"
+                android:textSize="13sp"
+                tools:ignore="HardcodedText,RtlHardcoded,TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/displayName"
+            app:layout_constraintTop_toBottomOf="@id/email"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="@dimen/margin_10"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             app:boxBackgroundMode="none">
@@ -66,6 +90,8 @@
                 android:textSize="13sp"
                 tools:ignore="HardcodedText,RtlHardcoded,TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/address"
             app:layout_constraintTop_toBottomOf="@id/displayName"
@@ -111,6 +137,7 @@
                 tools:ignore="HardcodedText,RtlHardcoded,TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
         <Button
+            android:id="@+id/update"
             app:layout_constraintTop_toBottomOf="@id/phonenumber"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

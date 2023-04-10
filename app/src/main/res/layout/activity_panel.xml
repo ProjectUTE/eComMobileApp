@@ -7,18 +7,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.activity.PanelActivity">
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollViewContainer"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollViewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        tools:ignore="SpeakableTextPresentCheck">
+
+        <FrameLayout
+            android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"
-            >
-            <FrameLayout
-                android:id="@+id/fragmentContainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
-        </androidx.core.widget.NestedScrollView>
+            android:layout_height="match_parent" />
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
         app:fabCradleRoundedCornerRadius="10dp"
         app:fabCradleMargin="10dp"
         app:hideOnScroll="true"
-        >
+        tools:ignore="VisualLintBottomAppBar">
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottomNav"
                 android:layout_width="match_parent"
@@ -38,15 +38,33 @@
                 android:background="@android:color/transparent"
                 app:labelVisibilityMode="unlabeled"
                 android:backgroundTint="@color/menu_item_color"
-                 />
+                tools:ignore="VisualLintBottomNav" />
     </com.google.android.material.bottomappbar.BottomAppBar>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabCart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_anchor="@id/bottomAppBar"
         android:src="@drawable/cart"
-        android:backgroundTint="@color/white"
+        app:backgroundTint="@color/white"
         app:borderWidth="0dp"
-        android:id="@+id/fabCart"
-        tools:ignore="ContentDescription" />
+        app:tint="@color/orange"
+        app:layout_anchor="@id/bottomAppBar"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck"/>
+
+    <TextView
+        android:background="@drawable/button_orange"
+        android:id="@+id/panic_fab"
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="3dp"
+        android:layout_gravity="bottom|center"
+        android:layout_marginLeft="40dp"
+        android:layout_marginBottom="70dp"
+        android:elevation="12dp"
+        app:elevation="6dp"
+        android:text="1"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
