@@ -14,12 +14,9 @@ import android.widget.Button;
 import vn.edu.ecomapp.R;
 
 public class MainMenuActivity extends AppCompatActivity {
-
-
 //    Components
     Button buttonLogin, buttonSignUp;
     ConstraintLayout constraintLayoutMainMenu;
-
 //    Animations
      Animation zoomIn, zoomOut;
 

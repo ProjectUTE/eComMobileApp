@@ -1,11 +1,15 @@
 package vn.edu.ecomapp.model;
 
 public class ImagePreview {
-    String id, imageUrl;
+    private String filePath;
+    private String id;
 
-    public ImagePreview(String id, String imageUrl) {
-        this.id = id;
-        this.imageUrl = imageUrl;
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public String getId() {
@@ -14,13 +18,5 @@ public class ImagePreview {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 }

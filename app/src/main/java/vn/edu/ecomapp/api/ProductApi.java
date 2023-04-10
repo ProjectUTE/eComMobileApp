@@ -4,12 +4,14 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import vn.edu.ecomapp.model.Product;
 
 public interface ProductApi {
-    @GET
-    Call<List<Product>> getProducts();
+    @GET("product/get-detail-product-by-id/{id}")
+    Call<Product> getProductById(@Path("id") String id);
 
-    @GET
-    Call<Product> getProductByCategoryId();
+    @GET("product/get-product-by-category-id")
+    Call<List<Product>> getProductByCategoryId(@Query("id") String categoryId, @Query("pageNo") String pageNo);
 }

@@ -6,6 +6,15 @@ import vn.edu.ecomapp.dto.message.MessageResponse;
 public class LoginResponse  extends MessageResponse {
     String email;
     AccessToken token;
+    String customerId;
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
 
     public String getEmail() {
         return email;

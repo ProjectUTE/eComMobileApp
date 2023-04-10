@@ -34,16 +34,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         this.categories = categories;
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setData(List<Category> categories) {
-          this.categories = categories;
-          notifyDataSetChanged();
-    }
-
     @NonNull
     @Override
     public CategoryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(this.context).inflate(R.layout.list_category_item_horizontal, parent, false);
+        View view = LayoutInflater.from(this.context).inflate(R.layout.list_category_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -52,12 +46,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final  Category category = this.categories.get(position);
         if(category == null) return;
-        holder.itemView.setOnClickListener(view -> listener.onItemClick(position, view));
-        holder.textViewTitle.setText(category.getName());
-//        holder.imageViewBackground.setImageResource(R.drawable.coffee);
-        String url = "https://product.hstatic.net/1000075078/product/1655348107_mochi-choco_9694871c490b426ab333810d17261c96_large.jpg";
-        if(context != null)
-            Glide.with(context).load(url).into(holder.imageViewBackground);
+        holder.setTitle(category);
+        holder.setImage();
+        holder.setOnClickListener(position, holder.itemView);
+        holder.setId(category);
     }
 
     @Override
@@ -67,13 +59,34 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
        return 0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewTitle;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView textViewTitle, categoryId;
         ImageView imageViewBackground;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageViewBackground = itemView.findViewById(R.id.image_view_background);
             textViewTitle = itemView.findViewById(R.id.text_view_title);
+            categoryId = itemView.findViewById(R.id.categoryId);
+        }
+
+        public void setTitle(Category category) {
+            if (category == null) return;
+            textViewTitle.setText(category.getName());
+        }
+
+        public void setId(Category category) {
+            if(category == null) return;
+            categoryId.setText(category.getId());
+        }
+
+        public void setImage() {
+            String url = "https://product.hstatic.net/1000075078/product/1655348107_mochi-choco_9694871c490b426ab333810d17261c96_large.jpg";
+            if(context != null)
+                Glide.with(context).load(url).into(imageViewBackground);
+        }
+
+        public void setOnClickListener(int position, View itemView) {
+            itemView.setOnClickListener(view -> listener.onItemClick(position, view) );
         }
     }
 }

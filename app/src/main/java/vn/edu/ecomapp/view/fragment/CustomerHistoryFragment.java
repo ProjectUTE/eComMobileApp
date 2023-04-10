@@ -1,6 +1,7 @@
 package vn.edu.ecomapp.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,33 +21,31 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.api.AccessTokenApi;
-import vn.edu.ecomapp.dto.login.LoginRequest;
-import vn.edu.ecomapp.dto.login.LoginResponse;
+import vn.edu.ecomapp.api.OrderApi;
 import vn.edu.ecomapp.model.Order;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.FragmentManager;
+import vn.edu.ecomapp.util.prefs.CustomerManager;
+import vn.edu.ecomapp.util.prefs.TokenManager;
 import vn.edu.ecomapp.view.adapter.OrderAdapter;
-import vn.edu.ecomapp.view.adapter.listener.OnItemClickListener;
 
 public class CustomerHistoryFragment extends Fragment {
 
     RecyclerView orderRecyclerView;
     List<Order> orders;
+    OrderApi orderApi;
+    TokenManager tokenManager;
+    CustomerManager customerManager;
 
-    private void initData() {
-        orders = new ArrayList<>();
-        orders.add(new Order());
-        orders.add(new Order());
-        orders.add(new Order());
-        orders.add(new Order());
-        orders.add(new Order());
-        orders.add(new Order());
-        orders.add(new Order());
-        orders.add(new Order());
-        orders.add(new Order());
-        orders.add(new Order());
-        orders.add(new Order());
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        tokenManager = TokenManager
+                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
+        customerManager = CustomerManager
+                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CUSTOMER, Context.MODE_PRIVATE));
+
     }
 
     private  void initializeComponents(View view) {
@@ -65,24 +64,32 @@ public class CustomerHistoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeComponents(view);
-        initData();
+        orders = new ArrayList<>();
+        orderApi = RetrofitClient.createApiWithAuth(OrderApi.class, tokenManager) ;
         loadOrderRecyclerView();
 
     }
 
     private void loadOrderRecyclerView() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        orderRecyclerView.setLayoutManager(linearLayoutManager);
-        OrderAdapter orderAdapter = new OrderAdapter(getContext(), orders);
-        orderRecyclerView.setAdapter(orderAdapter);
-        orderAdapter.setOnItemClickListener((position, view) -> goToLineItemsFragment(new LineItemFragment()));
-//        orderRecyclerView.addItemDecoration(new SpacesItemDecoration(20));
-    }
-    private void goToLineItemsFragment(Fragment fragment) {
-        requireActivity().getSupportFragmentManager().beginTransaction()
-             .replace(R.id.fragmentContainer, fragment, "changePasswordFragment")
-             .addToBackStack(null)
-             .commit();
+        String customerId = customerManager.getCustomer().getCustomerId();
+        orderApi.getOrderByCustomerId(customerId).enqueue(new Callback<List<Order>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Order>> call, @NonNull Response<List<Order>> response) {
+                Log.d("Order", "Success");
+                if(response.body() == null) return;
+                orders = response.body();
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+                orderRecyclerView.setLayoutManager(linearLayoutManager);
+                OrderAdapter orderAdapter = new OrderAdapter(getContext(), orders);
+                orderRecyclerView.setAdapter(orderAdapter);
+                orderAdapter.setOnItemClickListener((position, view) -> FragmentManager.nextFragment(requireActivity(), new LineItemFragment()));
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Order>> call, @NonNull Throwable t) {
+                Log.d("Order", t.getMessage());
+            }
+        });
     }
 
 }

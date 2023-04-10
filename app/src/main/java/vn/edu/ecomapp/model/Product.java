@@ -4,23 +4,38 @@ public class Product {
 
     private String id;
 	private String categoryId;
-	private String productName;
-	private long oldPrice;
-	private long newPrice;
+	private String name;
+	private int oldPrice;
+    private int newPrice;
 
-    public Product() {  }
+    private String mainImage, detail, createdBy;
 
-    public Product(String productName, long newPrice) {
-        this.productName = productName;
-        this.newPrice = newPrice;
+    public void setOldPrice(int oldPrice) {
+        this.oldPrice = oldPrice;
     }
 
-    public Product(String id, String categoryId, String productName, long oldPrice, long newPrice) {
-        this.id = id;
-        this.categoryId = categoryId;
-        this.productName = productName;
-        this.oldPrice = oldPrice;
-        this.newPrice = newPrice;
+    public String getMainImage() {
+        return mainImage;
+    }
+
+    public void setMainImage(String mainImage) {
+        this.mainImage = mainImage;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getId() {
@@ -39,27 +54,23 @@ public class Product {
         this.categoryId = categoryId;
     }
 
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public long getOldPrice() {
-        return oldPrice;
-    }
-
-    public void setOldPrice(long oldPrice) {
-        this.oldPrice = oldPrice;
-    }
-
-    public long getNewPrice() {
+    public int getNewPrice() {
         return newPrice;
     }
 
-    public void setNewPrice(long newPrice) {
+    public int getOldPrice() {
+        return oldPrice;
+    }
+
+    public void setNewPrice(int newPrice) {
         this.newPrice = newPrice;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 }

@@ -18,8 +18,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:background="@drawable/background_bottom_corner"
                 android:id="@+id/backgroundContainer"
+                android:background="@drawable/top_background"
                 />
              <ImageView
                  android:id="@+id/image_view_avatar"
@@ -29,8 +29,7 @@
                  android:layout_marginTop="50dp"
                  android:layout_width="100dp"
                  android:layout_height="100dp"
-                 android:scaleType="fitXY"
-                 android:src="@drawable/profile"/>
+                 android:scaleType="fitXY"/>
              <TextView
                  android:fontFamily="@font/open_sans_bold"
                  android:id="@+id/text_view_fullname"
@@ -78,50 +77,29 @@
                   >
                   <TextView
                       android:fontFamily="@font/open_sans_semibold"
-                      android:layout_weight="1"
-                      android:layout_width="wrap_content"
+                      android:layout_width="120dp"
                       android:layout_height="wrap_content"
-                      android:text="Password"/>
+                      android:text="CustomerID"/>
                   <TextView
+                      android:id="@+id/customerId"
                       android:fontFamily="@font/open_sans"
                       android:layout_weight="2"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:text="******"
+                      android:text="CU657829"
                       />
               </LinearLayout>
-              <View
-                  android:layout_marginHorizontal="10dp"
-                  android:background="#D9D9D9"
-                  android:layout_width="match_parent"
-                  android:layout_height="1dp"/>
-              <LinearLayout
-                  android:paddingHorizontal="20dp"
-                  android:paddingVertical="10dp"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:weightSum="3"
-                  >
-                  <TextView
-                      android:fontFamily="@font/open_sans_semibold"
-                      android:layout_weight="1"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text="Password"/>
-                  <TextView
-                      android:fontFamily="@font/open_sans"
-                      android:layout_weight="2"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text="******"
-                      />
-              </LinearLayout>
-              <View
+            <View
                   android:layout_marginHorizontal="10dp"
                   android:background="#D9D9D9"
                   android:layout_width="match_parent"
                   android:layout_height="1dp"/>
 
+             <View
+                  android:layout_marginHorizontal="10dp"
+                  android:background="#D9D9D9"
+                  android:layout_width="match_parent"
+                  android:layout_height="1dp"/>
               <LinearLayout
                   android:paddingHorizontal="20dp"
                   android:paddingVertical="10dp"
@@ -131,16 +109,16 @@
                   >
                   <TextView
                       android:fontFamily="@font/open_sans_semibold"
-                      android:layout_weight="1"
-                      android:layout_width="wrap_content"
+                      android:layout_width="120dp"
                       android:layout_height="wrap_content"
-                      android:text="Password"/>
+                      android:text="Phonenumber"/>
                   <TextView
+                      android:id="@+id/phone"
                       android:fontFamily="@font/open_sans"
                       android:layout_weight="2"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:text="******"
+                      android:text="0987654321"
                       />
               </LinearLayout>
               <View
@@ -157,42 +135,15 @@
                   >
                   <TextView
                       android:fontFamily="@font/open_sans_semibold"
-                      android:layout_weight="1"
-                      android:layout_width="wrap_content"
+                      android:layout_width="120dp"
                       android:layout_height="wrap_content"
-                      android:text="Password"/>
+                      android:text="Address"/>
                   <TextView
                       android:fontFamily="@font/open_sans"
                       android:layout_weight="2"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:text="******"
-                      />
-              </LinearLayout>
-              <View
-                  android:layout_marginHorizontal="10dp"
-                  android:background="#D9D9D9"
-                  android:layout_width="match_parent"
-                  android:layout_height="1dp"/>
-              <LinearLayout
-                  android:paddingHorizontal="20dp"
-                  android:paddingVertical="10dp"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:weightSum="3"
-                  >
-                  <TextView
-                      android:fontFamily="@font/open_sans_semibold"
-                      android:layout_weight="1"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text="Password"/>
-                  <TextView
-                      android:fontFamily="@font/open_sans"
-                      android:layout_weight="2"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text="******"
+                      android:text="Linh Trung, Thu Duc"
                       />
               </LinearLayout>
               <View

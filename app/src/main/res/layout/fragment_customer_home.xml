@@ -6,22 +6,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <!--            Profile -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="@drawable/background_bottom_corner"
+        android:background="@drawable/top_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/profileContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="220dp"
         android:paddingHorizontal="10dp"
         android:paddingTop="20dp"
         android:paddingBottom="40dp"
         >
         <TextView
             android:id="@+id/profileName"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Hi, Do Tuan"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:textSize="16dp"
@@ -42,40 +41,33 @@
             android:id="@+id/avatar"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@drawable/profile"
             android:scaleType="fitXY"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />
+
+        <EditText
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_10"
+            android:layout_marginTop="@dimen/margin_30"
+            android:background="@drawable/edit_text_corner"
+            android:elevation="1dp"
+            android:focusable="false"
+            android:hint="Find your coffee"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:padding="@dimen/padding_10"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/avatar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     <!--            Search -->
-
-     <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/search"
-            app:layout_constraintTop_toBottomOf="@id/profileContainer"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginHorizontal="@dimen/margin_10"
-            android:layout_marginTop="@dimen/margin_20"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            app:boxBackgroundMode="none">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/edit_text_corner_100"
-                android:drawablePadding="@dimen/padding_10"
-                android:fontFamily="@font/open_sans"
-                android:hint="Search Coffee Here"
-                android:inputType="text"
-                android:padding="10dp"
-                android:textSize="13sp"
-                tools:ignore="HardcodedText,RtlHardcoded,TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
 <!--            Banner -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        app:layout_constraintTop_toBottomOf="@id/search"
+        app:layout_constraintTop_toBottomOf="@id/profileContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="match_parent"
@@ -121,7 +113,7 @@
             android:id="@+id/recycler_view_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/list_category_item_horizontal" />
+            tools:listitem="@layout/list_category_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 <!--            Popular products-->
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -137,7 +129,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/open_sans_bold"
-        android:text="Popular"
+        android:text="Popular Coffee"
         android:textSize="16sp"
         android:textStyle="bold" />
     <TextView

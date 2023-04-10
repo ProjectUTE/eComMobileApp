@@ -5,18 +5,17 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.model.Product;
+import vn.edu.ecomapp.util.CurrencyFormat;
 import vn.edu.ecomapp.view.adapter.listener.OnItemClickListener;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
@@ -45,8 +44,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public void onBindViewHolder(@NonNull ProductAdapter.ViewHolder holder, int position) {
         final Product product = this.products.get(position);
         if (product == null) return;
-        holder.textViewName.setText(product.getProductName());
-        holder.itemView.setOnClickListener(view -> listener.onItemClick(position, view));
+        holder.setPrice(product);
+        holder.setName(product);
+        holder.setId(product);
+        holder.setDesc(product);
+        holder.setImage(product);
+        holder.setOnClickListener(position, holder.itemView);
     }
 
     @Override
@@ -56,19 +59,54 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         return  0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public  class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textViewName;
+        TextView textViewName, tvProductId, tvCost;
         ImageView imageViewPreview;
         TextView textViewDescription;
-
-        Button viewDetailButton;
+        TextView viewDetailButton;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvProductId = itemView.findViewById(R.id.tvProductId);
             textViewName = itemView.findViewById(R.id.text_view_title);
             imageViewPreview = itemView.findViewById(R.id.image_view_preview);
             textViewDescription = itemView.findViewById(R.id.text_view_description);
             viewDetailButton = itemView.findViewById(R.id.button_view_detail);
+            tvCost = itemView.findViewById(R.id.price);
+        }
+
+        public void setPrice(Product product) {
+            if (product == null) return;
+            String cost = CurrencyFormat.VietnameseCurrency(product.getNewPrice());
+            tvCost.setText(cost);
+        }
+
+        public void setId(Product product) {
+            if (product == null) return;
+            tvProductId.setText(product.getId());
+        }
+
+        public void setName(Product product) {
+            if(product == null)  return;
+            textViewName.setText(product.getName());
+        }
+        public void setImage(Product product) {
+//            if(product == null)  return;
+//            if(product.getMainImage() == null || product.getMainImage().equals("")) return;
+//            Glide.with(context) .load(product.getMainImage()).into(imageViewPreview);
+        }
+        public void setDesc(Product product) {
+            if(product == null)  return;
+            String desc = "";
+            if(product.getDetail().length() > 50) {
+               desc = product.getDetail().substring(0, 50);
+            } else {
+                desc = product.getDetail();
+            }
+            textViewDescription.setText(desc + "....");
+        }
+        public void setOnClickListener(int position, View itemView) {
+            itemView.setOnClickListener(view -> listener.onItemClick(position, view) );
         }
     }
 }

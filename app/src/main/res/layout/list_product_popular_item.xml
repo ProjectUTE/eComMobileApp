@@ -16,16 +16,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/text_view_name"
-            android:textSize="14sp"
-            android:fontFamily="@font/open_sans_semibold"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Back Coffee"/>
 
     <ImageView
         android:id="@+id/image_view_preview"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:src="@drawable/coffee"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,18 +35,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/open_sans_bold"
-        android:text="14,000 VND"
-        android:textSize="16dp"
+        android:text="14,000đ"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_view_preview" />
+        app:layout_constraintTop_toBottomOf="@id/image_view_preview"
+        tools:ignore="TextSizeCheck" />
 
-    <Button
+    <TextView
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="10dp"
-        android:layout_width="70dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="5dp"
+        android:layout_marginTop="@dimen/margin_10"
         android:background="@drawable/button_orange"
         android:elevation="3dp"
         android:text="See"

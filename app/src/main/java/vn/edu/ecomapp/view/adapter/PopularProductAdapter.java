@@ -44,8 +44,8 @@ public class PopularProductAdapter  extends RecyclerView.Adapter<PopularProductA
     public void onBindViewHolder(@NonNull PopularProductAdapter.ViewHolder holder, int position) {
         final Product product = this.products.get(position);
         if (product == null) return;
-        holder.textViewName.setText(product.getProductName());
-        holder.textViewPrice.setText(String.format("%d VND", product.getNewPrice()));
+        holder.textViewName.setText(product.getName());
+        holder.textViewPrice.setText(String.format("%dđ", product.getNewPrice()));
         holder.itemView.setOnClickListener(view -> listener.onItemClick(position, view));
     }
 
