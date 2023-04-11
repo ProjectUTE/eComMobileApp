@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.annotation.GlideOption;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -19,7 +18,8 @@ import java.util.List;
 
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.model.Slide;
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.util.constants.UrlConstants;
 
 public class SliderAdapter extends  RecyclerView.Adapter<SliderAdapter.ViewHolder>{
     Context context;
@@ -75,7 +75,7 @@ public class SliderAdapter extends  RecyclerView.Adapter<SliderAdapter.ViewHolde
 
         void  setSlideItem(Slide slide) {
             if(slide == null) return;
-            String link = slide.getLink().replace("http://localhost:8080", Constants.BASE_URL);
+            String link = slide.getLink().replace(UrlConstants.BASE_URL_LOCAL, UrlConstants.BASE_URL);
             Glide.with(context).load(link)
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(10)))
                     .into(slideItem);

@@ -30,7 +30,7 @@ import vn.edu.ecomapp.api.ProductApi;
 import vn.edu.ecomapp.model.Category;
 import vn.edu.ecomapp.model.Product;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.FragmentManager;
 import vn.edu.ecomapp.util.prefs.CategoryManager;
 import vn.edu.ecomapp.util.prefs.ProductManager;
@@ -56,11 +56,11 @@ public class CustomerFoodFragment  extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         categoryManager = CategoryManager
-                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CATEGORY, Context.MODE_PRIVATE));
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CATEGORY, Context.MODE_PRIVATE));
         productManager =  ProductManager
-                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_PRODUCT, Context.MODE_PRIVATE));
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_PRODUCT, Context.MODE_PRIVATE));
         tokenManager = TokenManager
-                .getInstance(context.getSharedPreferences(Constants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
+                .getInstance(context.getSharedPreferences(PrefsConstants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

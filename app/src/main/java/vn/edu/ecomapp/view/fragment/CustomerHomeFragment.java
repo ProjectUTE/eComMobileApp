@@ -46,8 +46,9 @@ import vn.edu.ecomapp.model.Product;
 import vn.edu.ecomapp.model.Slide;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.services.oauth2.GoogleAuthManager;
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.FragmentManager;
+import vn.edu.ecomapp.util.constants.UrlConstants;
 import vn.edu.ecomapp.util.prefs.CategoryManager;
 import vn.edu.ecomapp.util.prefs.CustomerManager;
 import vn.edu.ecomapp.util.prefs.TokenManager;
@@ -97,11 +98,11 @@ public class CustomerHomeFragment extends Fragment{
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-         prefs = context.getSharedPreferences(Constants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE);
+         prefs = context.getSharedPreferences(PrefsConstants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE);
          categoryManager = CategoryManager
-                 .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CATEGORY, Context.MODE_PRIVATE));
+                 .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CATEGORY, Context.MODE_PRIVATE));
          customerManager = CustomerManager
-                 .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CUSTOMER, Context.MODE_PRIVATE));
+                 .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CUSTOMER, Context.MODE_PRIVATE));
     }
 
     @Nullable
@@ -145,14 +146,14 @@ public class CustomerHomeFragment extends Fragment{
                             }
                         }
                         else {
-                            avatarStr = profile.getAvatar().replace(Constants.BASE_URL_LOCAL, Constants.BASE_URL);
+                            avatarStr = profile.getAvatar().replace(UrlConstants.BASE_URL_LOCAL, UrlConstants.BASE_URL);
                         }
                         profile.setAvatar(avatarStr);
                         customerManager.removeCustomer();
                         customerManager.saveCustomer(profile);
 
                         displayName.setText(profile.getDisplayName());
-                        Glide.with(requireContext())
+                        Glide.with(getContext())
                             .load(profile.getAvatar())
                             .apply(RequestOptions.bitmapTransform(new RoundedCorners(1000)))
                             .into(avatar);

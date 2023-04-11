@@ -1,7 +1,5 @@
 package vn.edu.ecomapp.retrofit;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -16,7 +14,8 @@ import vn.edu.ecomapp.api.AccessTokenApi;
 import vn.edu.ecomapp.dto.AccessToken;
 import vn.edu.ecomapp.dto.login.LoginRequest;
 import vn.edu.ecomapp.dto.login.LoginResponse;
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.HttpStatusCodeConstants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.prefs.TokenManager;
 
 public class CustomAuthenticator  implements Authenticator {
@@ -35,7 +34,7 @@ public class CustomAuthenticator  implements Authenticator {
     @Nullable
     @Override
     public Request authenticate(@Nullable Route route, @NonNull Response response) throws IOException {
-        if(response.code() == Constants.BAD_REQUEST) {
+        if(response.code() == HttpStatusCodeConstants.BAD_REQUEST) {
             String email = "doduongthaituan201102@gmail.com";
             String password = "doduongthaituan201102@gmail.com";
             int role = 1;

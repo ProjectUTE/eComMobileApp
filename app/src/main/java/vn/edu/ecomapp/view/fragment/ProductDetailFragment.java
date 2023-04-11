@@ -16,6 +16,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
+import java.lang.invoke.ConstantCallSite;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,10 +32,11 @@ import vn.edu.ecomapp.model.ImagePreview;
 import vn.edu.ecomapp.model.LineItem;
 import vn.edu.ecomapp.model.Product;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
-import vn.edu.ecomapp.util.Constants;
 import vn.edu.ecomapp.util.CurrencyFormat;
 import vn.edu.ecomapp.util.FragmentManager;
 import vn.edu.ecomapp.util.Random;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.util.constants.UrlConstants;
 import vn.edu.ecomapp.util.prefs.CartManager;
 import vn.edu.ecomapp.util.prefs.ProductManager;
 import vn.edu.ecomapp.util.prefs.TokenManager;
@@ -41,7 +45,7 @@ import vn.edu.ecomapp.view.adapter.ImagePreviewAdapter;
 public class ProductDetailFragment extends Fragment {
 
     TextView appBarTitle;
-    ImageView backButton;
+    ImageView backButton, image;
     TextView addToCartButton;
     RecyclerView imagePreviewsRecycerView;
     List<ImagePreview> imagePreviews;
@@ -59,11 +63,11 @@ public class ProductDetailFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         cartManager = CartManager
-                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CART, Context.MODE_PRIVATE));
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CART, Context.MODE_PRIVATE));
         productManager = ProductManager
-                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_PRODUCT, Context.MODE_PRIVATE));
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_PRODUCT, Context.MODE_PRIVATE));
         tokenManager = TokenManager
-                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
     }
 
     @Override
@@ -97,6 +101,8 @@ public class ProductDetailFragment extends Fragment {
         backButton = view.findViewById(R.id.backButton);
         appBarTitle = view.findViewById(R.id.appBarTitle);
         addToCartButton = view.findViewById(R.id.addToCartButton);
+        image = view.findViewById(R.id.image);
+
         cart = cartManager.getCart();
         productId = productManager.getProductId();
         productApi = RetrofitClient.createApiWithAuth(ProductApi.class, tokenManager);
@@ -122,6 +128,11 @@ public class ProductDetailFragment extends Fragment {
                 tvName.setText(productDetail.getName());
                 appBarTitle.setText(productDetail.getName());
                 tvDetail.setText(productDetail.getDetail());
+                if(productDetail.getMainImage() == null || productDetail.getMainImage().equals("")) return;
+                String imageUrlReplaced = productDetail.getMainImage()
+                                .replace(UrlConstants.BASE_URL_LOCAL, UrlConstants.BASE_URL)
+                                        .replace(" ", "%20");
+//                Glide.with(requireContext()).load(imageUrlReplaced).into(image);
             }
 
             @Override

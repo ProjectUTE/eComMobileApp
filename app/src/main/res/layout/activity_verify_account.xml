@@ -41,36 +41,34 @@
             tools:ignore="HardcodedText" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="20dp"
             app:layout_constraintTop_toBottomOf="@id/verifyDescription">
 
-            <com.google.android.material.textfield.TextInputLayout
+           <com.google.android.material.textfield.TextInputLayout
+                app:boxBackgroundMode="none"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:id="@+id/edit_text_otp_code"
-                android:layout_width="300dp"
-                app:boxBackgroundMode="none"
-                android:layout_height="60dp"
-                android:layout_marginTop="10dp"
-                >
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="@dimen/margin_20"
+                android:layout_height="60dp">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:background="@drawable/edit_text_corner_100"
-                    android:drawablePadding="10dp"
-                    android:fontFamily="@font/open_sans"
-                    android:hint="Enter code"
-                    android:textSize="13sp"
-                    android:inputType="text"
-                    android:paddingHorizontal="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    />
+                    android:background="@drawable/edit_text_corner_100"
+                    android:drawableStart="@drawable/lock_orange"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="@font/open_sans"
+                    android:hint="OTP"
+                    android:inputType="number"
+                    android:textSize="13sp"
+                    android:padding="10dp" />
             </com.google.android.material.textfield.TextInputLayout>
-
             <TextView
                 app:layout_constraintTop_toBottomOf="@id/edit_text_otp_code"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -78,6 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="@dimen/margin_20"
                 android:textSize="12sp"
                 android:fontFamily="@font/open_sans"
                 android:text="Resend code"
@@ -88,7 +87,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:id="@+id/button_verify_account"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="@dimen/margin_20"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/button_orange_corner_100"

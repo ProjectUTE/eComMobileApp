@@ -24,7 +24,7 @@ import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.api.OrderApi;
 import vn.edu.ecomapp.model.Order;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.FragmentManager;
 import vn.edu.ecomapp.util.prefs.CustomerManager;
 import vn.edu.ecomapp.util.prefs.TokenManager;
@@ -42,9 +42,9 @@ public class CustomerHistoryFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         tokenManager = TokenManager
-                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
         customerManager = CustomerManager
-                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CUSTOMER, Context.MODE_PRIVATE));
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CUSTOMER, Context.MODE_PRIVATE));
 
     }
 

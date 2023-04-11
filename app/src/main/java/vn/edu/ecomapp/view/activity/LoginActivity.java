@@ -1,17 +1,20 @@
 package vn.edu.ecomapp.view.activity;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -28,7 +31,9 @@ import vn.edu.ecomapp.controller.LoginController;
 import vn.edu.ecomapp.dto.login.Login;
 import vn.edu.ecomapp.dto.login.LoginRequest;
 import vn.edu.ecomapp.services.oauth2.GoogleAuthManager;
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.DrawablePositionConstants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.util.constants.RoleCodeConstants;
 import vn.edu.ecomapp.util.prefs.DataLoginManager;
 
 public class LoginActivity extends AppCompatActivity {
@@ -39,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInOptions googleSignInOptions;
 
 //    Components
-    ImageView googleLoginButton;
+    ConstraintLayout googleLoginButton;
     CheckBox rememberMeCheckbox;
     TextView textViewNotYetAccount, textViewForgotPassword;
     TextInputLayout editTextEmail, editTextPassword;
@@ -50,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     boolean isGoogleLogin = false;
     DataLoginManager dataLoginManager;
     LoginController loginController;
+    ProgressDialog pd;
 
 
     private void setIsGoogleLogin(boolean value) {
@@ -60,8 +66,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        pd = new ProgressDialog(LoginActivity.this);
+        pd.setCanceledOnTouchOutside(false);
         dataLoginManager = DataLoginManager
-                .getInstance(getSharedPreferences(Constants.DATA_USER_LOGIN, MODE_PRIVATE));
+                .getInstance(getSharedPreferences(PrefsConstants.DATA_USER_LOGIN, MODE_PRIVATE));
         googleSignInOptions = GoogleAuthManager.getGoogleSignInOptions();
         googleSignInClient = GoogleAuthManager.getGoogleSignInClient(this, googleSignInOptions);
         loginController = new LoginController(this);
@@ -89,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initializeComponents() {
         textViewNotYetAccount = findViewById(R.id.text_view_not_yet_account);
         textViewForgotPassword = findViewById(R.id.text_view_forgot_password);
@@ -97,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.edit_text_email);
         editTextPassword = findViewById(R.id.edit_text_password);
         googleLoginButton = findViewById(R.id.googleButton);
+
         // Auto fill input
         Login dataLogin = dataLoginManager.getDataLogin();
         Objects.requireNonNull(editTextEmail.getEditText()).setText(dataLogin.getEmail());
@@ -150,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
            }
 
 //               Call controller
-           LoginRequest loginRequest = new LoginRequest(email, password, isGoogleLogin, Constants.USER_CUSTOMER);
+           LoginRequest loginRequest = new LoginRequest(email, password, isGoogleLogin, RoleCodeConstants.USER_CUSTOMER);
            loginController.handleLogin(loginRequest);
        }
 

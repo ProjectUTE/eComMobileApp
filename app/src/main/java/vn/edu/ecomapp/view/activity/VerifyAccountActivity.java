@@ -1,77 +1,106 @@
 package vn.edu.ecomapp.view.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputLayout;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.IOException;
 import java.util.Objects;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.api.LoginApi;
+import vn.edu.ecomapp.api.AuthApi;
 import vn.edu.ecomapp.dto.message.MessageResponse;
+import vn.edu.ecomapp.dto.signup.SignUpResponse;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.util.AlertDialogMessage;
+import vn.edu.ecomapp.util.constants.HttpStatusConstants;
 
 public class VerifyAccountActivity extends AppCompatActivity {
-    TextInputLayout editTextEmail, editTextVerifyCode;
+    TextInputLayout editTextVerifyCode;
     Button buttonVerifyAccount;
+    AuthApi authApi;
+    ProgressDialog pd;
 
-    LoginApi loginApi;
+    Gson gson = new GsonBuilder().create();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_account);
-        this.initializeComponents();
-        this.handleVerifyAccount();
+        pd = new ProgressDialog(VerifyAccountActivity.this);
+        pd.setCanceledOnTouchOutside(false);
+        initializeComponents();
+        handleVerifyAccount();
     }
 
     private void initializeComponents() {
-        this.editTextEmail = findViewById(R.id.edit_text_email);
-        this.editTextVerifyCode = findViewById(R.id.edit_text_otp_code);
-        this.buttonVerifyAccount = findViewById(R.id.button_verify_account);
-
-        Intent intent = getIntent();
-        String email = intent.getStringExtra("email");
-//        editTextEmail.getEditText().setText(email);
-        loginApi = RetrofitClient.getRetrofit().create(LoginApi.class);
+        editTextVerifyCode = findViewById(R.id.edit_text_otp_code);
+        buttonVerifyAccount = findViewById(R.id.button_verify_account);
+        authApi = RetrofitClient.createApiWithClientTimeout(AuthApi.class);
     }
 
     private void handleVerifyAccount() {
-        buttonVerifyAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String otpCode = Objects.requireNonNull(editTextVerifyCode.getEditText()).getText().toString().trim();
-                loginApi.verifyAccountUser(otpCode).enqueue(new Callback<MessageResponse>() {
-                    @Override
-                    public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+        buttonVerifyAccount.setOnClickListener(v -> {
+            pd.setTitle("Verify Account");
+            pd.setMessage("Checking OTP, please wait");
+            String otpCode = Objects.requireNonNull(editTextVerifyCode.getEditText()).getText().toString().trim();
+            if(otpCode.equals("")) {
+                editTextVerifyCode.getEditText().setError("Please enter your OTP code");
+                return;
+            }
+
+            String FORM_DATA = "multipart/form-data";
+            RequestBody rbOTP = RequestBody.create(MediaType.parse(FORM_DATA), otpCode);
+            pd.show();
+            authApi.verifyAccountUser(rbOTP).enqueue(new Callback<MessageResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<MessageResponse> call, @NonNull Response<MessageResponse> response) {
+                    pd.dismiss();
+                    if(response.isSuccessful()) {
+                        if(response.body() == null) return;
                         AlertDialogMessage.showAlertMessage(VerifyAccountActivity.this, response.body().getTitle(), response.body().getMessage());
-                        if(response.body().getStatus().equals("SUCCESS")){
-                            Intent intent = new Intent(VerifyAccountActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Intent intent = new Intent(VerifyAccountActivity.this, SignUpActivity.class);
+                        Intent intent;
+                        if(response.body().getStatus().equals(HttpStatusConstants.SUCCESS)){
+                            intent = new Intent(VerifyAccountActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish();
                         }
+                        return;
                     }
+                    SignUpResponse signUpResponse;
+                    try {
+                        if(response.errorBody() == null) return;
+                        signUpResponse = gson.fromJson(response.errorBody().string(), SignUpResponse.class);
+                        Log.d("Verify Account", signUpResponse.getMessage());
+                        Toast.makeText(VerifyAccountActivity.this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        Log.d("Verify Account", e.getMessage());
+                        throw new RuntimeException(e);
+                    }
+                }
 
-                    @Override
-                    public void onFailure(Call<MessageResponse> call, Throwable t) {
-                        Toast.makeText(VerifyAccountActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+                @Override
+                public void onFailure(@NonNull Call<MessageResponse> call, @NonNull Throwable t) {
+                    pd.dismiss();
+                    Toast.makeText(VerifyAccountActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.d("Verify Account", t.getMessage());
+                }
+            });
         });
     }
 }

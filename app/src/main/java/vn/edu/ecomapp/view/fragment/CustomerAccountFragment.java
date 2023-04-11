@@ -31,8 +31,9 @@ import vn.edu.ecomapp.api.ProfileApi;
 import vn.edu.ecomapp.model.Customer;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.services.oauth2.GoogleAuthManager;
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.FragmentManager;
+import vn.edu.ecomapp.util.constants.UrlConstants;
 import vn.edu.ecomapp.util.prefs.CartManager;
 import vn.edu.ecomapp.util.prefs.CustomerManager;
 import vn.edu.ecomapp.util.prefs.TokenManager;
@@ -55,11 +56,11 @@ public class CustomerAccountFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         cartManager = CartManager
-                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CART, Context.MODE_PRIVATE));
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CART, Context.MODE_PRIVATE));
         customerManager = CustomerManager
-                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CUSTOMER, Context.MODE_PRIVATE));
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CUSTOMER, Context.MODE_PRIVATE));
         tokenManager = TokenManager
-                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
     }
 
     @Nullable
@@ -92,7 +93,7 @@ public class CustomerAccountFragment extends Fragment {
                                     }
                                 }
                                 else {
-                                    avatarStr = profile.getAvatar().replace(Constants.BASE_URL_LOCAL, Constants.BASE_URL);
+                                    avatarStr = profile.getAvatar().replace(UrlConstants.BASE_URL_LOCAL, UrlConstants.BASE_URL);
                                 }
 
                                 profile.setAvatar(avatarStr);

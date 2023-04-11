@@ -1,6 +1,7 @@
 package vn.edu.ecomapp.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,9 @@ import java.util.List;
 
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.model.PaymentMethod;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.FragmentManager;
+import vn.edu.ecomapp.util.prefs.PaymentManager;
 import vn.edu.ecomapp.view.adapter.PaymentAdapter;
 
 public class SelectPaymentFragment extends Fragment {
@@ -28,6 +31,14 @@ public class SelectPaymentFragment extends Fragment {
     ImageView backButton;
     RecyclerView rcvPayment;
     List<PaymentMethod> paymentMethods;
+    PaymentManager paymentManager;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        paymentManager = PaymentManager
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_PAYMENT, Context.MODE_PRIVATE));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,6 +68,11 @@ public class SelectPaymentFragment extends Fragment {
         LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcvPayment.setAdapter(adapter);
         rcvPayment.setLayoutManager(layout);
-        adapter.setOnItemClickListener((position, view12) -> FragmentManager.nextFragment(requireActivity(), new CheckoutFragment()));
+        adapter.setOnItemClickListener((position, view12) ->{
+            TextView tvId = view12.findViewById(R.id.tvId);
+            if (tvId == null) return;
+            paymentManager.savePaymentId(tvId.getText().toString());
+             FragmentManager.nextFragment(requireActivity(), new CheckoutFragment());
+        });
     }
 }

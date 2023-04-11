@@ -45,6 +45,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHold
         final PaymentMethod pm = paymentMethods.get(position);
         if(pm == null) return;
         holder.setName(pm);
+        holder.setId(pm);
         holder.setOnClickListener(position, holder.itemView);
     }
 
@@ -61,12 +62,18 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHold
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.name);
+            tvId = itemView.findViewById(R.id.tvId);
             ivImage = itemView.findViewById(R.id.image);
         }
 
         public void setName(PaymentMethod pm) {
            if (pm == null) return;
            tvName.setText(pm.getName());
+        }
+
+        public void setId(PaymentMethod pm) {
+            if (pm == null) return;
+            tvId.setText(pm.getId());
         }
 
         public void setImage(PaymentMethod pm) {

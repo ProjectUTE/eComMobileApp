@@ -2,7 +2,7 @@ package vn.edu.ecomapp.util.prefs;
 
 import android.content.SharedPreferences;
 
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
 
 public class OrderManager {
    private final SharedPreferences prefs;
@@ -21,16 +21,16 @@ public class OrderManager {
    }
 
    public String getOrderId() {
-        return prefs.getString(Constants.ORDER_ID, null);
+        return prefs.getString(PrefsConstants.ORDER_ID, null);
    }
 
    public void saveOrderId(String categoryId) {
-       editor.putString(Constants.ORDER_ID, categoryId);
+       editor.putString(PrefsConstants.ORDER_ID, categoryId);
        editor.apply();
    }
 
    public void removeOrderId() {
-        editor.remove(Constants.ORDER_ID);
+        editor.remove(PrefsConstants.ORDER_ID);
         editor.apply();
    }
 }

@@ -1,20 +1,24 @@
 package vn.edu.ecomapp.retrofit;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.util.constants.UrlConstants;
 import vn.edu.ecomapp.util.prefs.TokenManager;
 
 public class RetrofitClient {
 //    private static final String BASE_URL = "http://192.168.137.1:8081/api/";
-    private static final String BASE_URL = Constants.BASE_URL + "/api/";
+    private static final String BASE_URL = UrlConstants.BASE_URL + "/api/";
     private final static OkHttpClient client = buildClient();
     private final static Retrofit retrofit = buildRetrofit();
 
     private static OkHttpClient buildClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
+
                 .addInterceptor(chain -> {
                     Request request = chain.request();
                     Request.Builder builder1 = request.newBuilder()
@@ -55,6 +59,16 @@ public class RetrofitClient {
              request = builder.build();
              return chain.proceed(request);
          }).authenticator(CustomAuthenticator.getInstance(tokenManager)).build();
+        Retrofit newRetrofit = retrofit.newBuilder().client(newClient).build();
+        return newRetrofit.create(service);
+    }
+
+      public static <T> T createApiWithClientTimeout(Class<T> service) {
+         OkHttpClient newClient = client.newBuilder()
+                 .connectTimeout(60, TimeUnit.SECONDS)
+                 .readTimeout(60, TimeUnit.SECONDS)
+                 .writeTimeout(60, TimeUnit.SECONDS)
+                 .build();
         Retrofit newRetrofit = retrofit.newBuilder().client(newClient).build();
         return newRetrofit.create(service);
     }

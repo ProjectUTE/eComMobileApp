@@ -41,7 +41,7 @@
                 tools:ignore="HardcodedText" />
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_marginTop="20dp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="150dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +53,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:id="@+id/edit_text_email"
-                    android:layout_width="300dp"
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="@dimen/margin_20"
                     app:boxBackgroundMode="none"
                     android:layout_height="60dp">
 
@@ -73,21 +74,22 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     app:boxBackgroundMode="none"
+                    app:passwordToggleEnabled="true"
                     android:id="@+id/edit_text_password"
                     app:layout_constraintTop_toBottomOf="@id/edit_text_email"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_width="300dp"
+                    android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:layout_marginHorizontal="@dimen/margin_20"
                     android:layout_marginTop="10dp"
                     >
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:drawableStart="@drawable/lock_orange"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/edit_text_corner_100"
-                        android:drawableLeft="@drawable/lock_orange"
-                        android:drawableRight="@drawable/eye_orange"
                         android:drawablePadding="10dp"
                         android:fontFamily="@font/open_sans"
                         android:hint="Password"
@@ -99,21 +101,22 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     app:boxBackgroundMode="none"
+                    app:passwordToggleEnabled="true"
                     app:layout_constraintTop_toBottomOf="@id/edit_text_password"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:id="@+id/edit_text_confirm_password"
-                    android:layout_width="300dp"
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="@dimen/margin_20"
                     android:layout_height="60dp"
                     android:layout_marginTop="10dp"
                     >
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:drawableStart="@drawable/lock_orange"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/edit_text_corner_100"
-                        android:drawableLeft="@drawable/lock_orange"
-                        android:drawableRight="@drawable/eye_orange"
                         android:drawablePadding="10dp"
                         android:fontFamily="@font/open_sans"
                         android:hint="Confirm password"
@@ -125,7 +128,8 @@
 
                 <Button
                     android:id="@+id/button_sign_up"
-                    android:layout_width="300dp"
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="@dimen/margin_20"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
                     android:background="@drawable/button_orange_corner_100"

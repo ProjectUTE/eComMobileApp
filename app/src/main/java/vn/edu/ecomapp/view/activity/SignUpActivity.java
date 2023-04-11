@@ -1,8 +1,11 @@
 package vn.edu.ecomapp.view.activity;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,17 +14,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.api.LoginApi;
-import vn.edu.ecomapp.dto.message.MessageResponse;
+import vn.edu.ecomapp.api.AuthApi;
+import vn.edu.ecomapp.dto.signup.SignUpResponse;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.util.AlertDialogMessage;
+import vn.edu.ecomapp.util.constants.HttpStatusConstants;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -29,21 +36,29 @@ public class SignUpActivity extends AppCompatActivity {
    TextInputLayout editTextEmail, editTextPassword, editTextConfirmPassword;
    Button buttonSignUp;
    String email = "", password = "", confirmPassword = "";
-   LoginApi loginApi;
+   AuthApi authApi;
+
+   ProgressDialog pd;
+   AlertDialog.Builder alBuilder;
+
+    Gson gson = new GsonBuilder().create();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        this.initializeComponents();
-        this.initializeDatabase();
-        this.handleTextViewClick();
-        this.handleButtonSignUpClick();
+        pd = new ProgressDialog(SignUpActivity.this);
+        pd.setCanceledOnTouchOutside(false);
+        alBuilder = new AlertDialog.Builder(this);
+        initializeComponents();
+        initializeDatabase();
+        handleTextViewClick();
+        handleButtonSignUpClick();
     }
 
 
     private  void initializeDatabase() {
-        loginApi = RetrofitClient.getRetrofit().create(LoginApi.class);
+        authApi = RetrofitClient.createApiWithClientTimeout(AuthApi.class);
     }
 
     private void initializeComponents() {
@@ -68,32 +83,48 @@ public class SignUpActivity extends AppCompatActivity {
             email = Objects.requireNonNull(editTextEmail.getEditText()).getText().toString().trim();
             password = Objects.requireNonNull(editTextPassword.getEditText()).getText().toString().trim();
             confirmPassword = Objects.requireNonNull(editTextConfirmPassword.getEditText()).getText().toString().trim();
-            if(password.equals(confirmPassword)) {
-                loginApi.createAccountUser(email, password).enqueue(new Callback<MessageResponse>() {
+
+            if(!isValid()) return;
+            pd.setTitle("Sign Up Account");
+            pd.setMessage("Account creation in progress, please wait");
+            pd.show();
+                authApi.createAccountUser(email, password).enqueue(new Callback<SignUpResponse>() {
                     @Override
-                    public void onResponse(@NonNull Call<MessageResponse> call, @NonNull Response<MessageResponse> response) {
-                        assert response.body() != null;
-                        AlertDialogMessage.showAlertMessage(SignUpActivity.this, response.body().getTitle(), response.body().getMessage());
-                        if(response.body().getStatus().equals("SUCCESS")) {
-                            Intent intent = new Intent(SignUpActivity.this, VerifyAccountActivity.class);
-                            intent.putExtra("email", email);
-                            startActivity(intent);
-                            finish();
+                    public void onResponse(@NonNull Call<SignUpResponse> call, @NonNull Response<SignUpResponse> response) {
+                        pd.dismiss();
+                        if(response.isSuccessful()) {
+                            // Success
+                            if(response.body() == null) return;
+                            if(response.body().getStatus().equals(HttpStatusConstants.SUCCESS)) {
+                                alBuilder.setTitle(response.body().getTitle());
+                                alBuilder.setMessage(response.body().getMessage());
+                                alBuilder.setPositiveButton("Yes", (dialogInterface, i) -> {
+                                    Intent intent = new Intent(SignUpActivity.this, VerifyAccountActivity.class);
+                                    startActivity(intent);
+                                })
+                                        .setNegativeButton("No", (dialogInterface, i) -> dialogInterface.cancel()).show();
+                            }
+                            return;
+                        }
+                        SignUpResponse signUpResponse;
+                        try {
+                            if(response.errorBody() == null) return;
+                            if(response.errorBody().string() == null) return;
+                            signUpResponse = gson.fromJson(response.errorBody().string(), SignUpResponse.class);
+                            Log.d("SIGNUP", signUpResponse.getMessage());
+                            Toast.makeText(SignUpActivity.this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            Log.d("SIGNUP", e.getMessage());
+                            throw new RuntimeException(e);
                         }
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<MessageResponse> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<SignUpResponse> call, @NonNull Throwable t) {
                         AlertDialogMessage.showAlertMessage(SignUpActivity.this, "Sign Up Message", t.getMessage());
-//                            Intent intent = new Intent(SignUpActivity.this, VerifyAccountActivity.class);
-//                            intent.putExtra("email", email);
-//                            startActivity(intent);
-//                            finish();
+                        Log.d("TAG", t.getMessage());
                     }
                 });
-            } else {
-                Toast.makeText(SignUpActivity.this, "Confirm the password needs to be the same as the password", Toast.LENGTH_SHORT).show();
-            }
         });
     }
 
@@ -102,10 +133,10 @@ public class SignUpActivity extends AppCompatActivity {
                 + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
         Objects.requireNonNull(editTextEmail).setError("");
         Objects.requireNonNull(editTextPassword).setError("");
-//        Objects.requireNonNull(editTextConfirmPassword).setError("");
+        Objects.requireNonNull(editTextConfirmPassword).setError("");
         editTextEmail.setErrorEnabled(false);
         editTextPassword.setErrorEnabled(false);
-//        editTextConfirmPassword.setErrorEnabled(false);
+        editTextConfirmPassword.setErrorEnabled(false);
         boolean isValidEmail = false, isValidPassword = false, isValidConfirmPassword = false;
 
         if(TextUtils.isEmpty(email)) {
@@ -132,19 +163,18 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }
 
-//        if(TextUtils.isEmpty(confirmPassword)) {
-//            editTextConfirmPassword.setErrorEnabled(true);
-//            Objects.requireNonNull(editTextConfirmPassword.getEditText()).setError("Confirm password is required");
-//        }
-//        else {
-//            if(!TextUtils.equals(password, confirmPassword)) {
-//                editTextConfirmPassword.setErrorEnabled(true);
-//                Objects.requireNonNull(editTextConfirmPassword.getEditText()).setError("Confirm password doesn't match");
-//            } else {
-//                isValidConfirmPassword = true;
-//            }
-//        }
-//        return  isValidEmail && isValidPassword && isValidConfirmPassword;
-        return  isValidEmail && isValidPassword;
+        if(TextUtils.isEmpty(confirmPassword)) {
+            editTextConfirmPassword.setErrorEnabled(true);
+            Objects.requireNonNull(editTextConfirmPassword.getEditText()).setError("Confirm password is required");
+        }
+        else {
+            if(!TextUtils.equals(password, confirmPassword)) {
+                editTextConfirmPassword.setErrorEnabled(true);
+                Objects.requireNonNull(editTextConfirmPassword.getEditText()).setError("Confirm password doesn't match");
+            } else {
+                isValidConfirmPassword = true;
+            }
+        }
+        return  isValidEmail && isValidPassword && isValidConfirmPassword;
     }
 }

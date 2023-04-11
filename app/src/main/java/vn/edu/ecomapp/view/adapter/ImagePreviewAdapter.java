@@ -16,7 +16,8 @@ import java.util.List;
 
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.model.ImagePreview;
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.util.constants.UrlConstants;
 
 public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapter.ViewHolder> {
     List<ImagePreview> imagePreviews;
@@ -64,7 +65,7 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapte
 
         public void setImage(ImagePreview ins) {
             if (ins == null) return;
-            String filePathReplaced = ins.getFilePath().replace(Constants.BASE_URL_LOCAL, Constants.BASE_URL);
+            String filePathReplaced = ins.getFilePath().replace(UrlConstants.BASE_URL_LOCAL, UrlConstants.BASE_URL);
                 Glide.with(context).load(filePathReplaced).into(image);
         }
     }

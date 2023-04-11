@@ -2,7 +2,7 @@ package vn.edu.ecomapp.util.prefs;
 
 import android.content.SharedPreferences;
 
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
 
 public class CategoryManager {
    private final SharedPreferences prefs;
@@ -21,16 +21,16 @@ public class CategoryManager {
    }
 
    public String getCategoryId() {
-        return prefs.getString(Constants.CATEGORY_ID, null);
+        return prefs.getString(PrefsConstants.CATEGORY_ID, null);
    }
 
    public void saveCategoryId(String categoryId) {
-       editor.putString(Constants.CATEGORY_ID, categoryId);
+       editor.putString(PrefsConstants.CATEGORY_ID, categoryId);
        editor.apply();
    }
 
    public void removeCategoryId() {
-        editor.remove(Constants.CATEGORY_ID);
+        editor.remove(PrefsConstants.CATEGORY_ID);
         editor.apply();
    }
 }

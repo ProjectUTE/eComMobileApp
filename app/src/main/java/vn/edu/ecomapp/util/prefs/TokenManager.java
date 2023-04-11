@@ -3,7 +3,7 @@ package vn.edu.ecomapp.util.prefs;
 import android.content.SharedPreferences;
 
 import vn.edu.ecomapp.dto.AccessToken;
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
 
 public class TokenManager {
    private final SharedPreferences prefs;
@@ -23,21 +23,21 @@ public class TokenManager {
 
    public void saveToken(AccessToken token) {
        if(token == null) return;
-       editor.putString(Constants.ACCESS_TOKEN, token.getAccessToken());
-       editor.putString(Constants.REFRESH_TOKEN, token.getRefreshToken());
+       editor.putString(PrefsConstants.ACCESS_TOKEN, token.getAccessToken());
+       editor.putString(PrefsConstants.REFRESH_TOKEN, token.getRefreshToken());
        editor.commit();
    }
 
    public void removeToken() {
-        editor.remove(Constants.ACCESS_TOKEN);
-        editor.remove(Constants.REFRESH_TOKEN);
+        editor.remove(PrefsConstants.ACCESS_TOKEN);
+        editor.remove(PrefsConstants.REFRESH_TOKEN);
         editor.commit();
    }
 
    public AccessToken getAccessToken() {
        AccessToken instance = new AccessToken();
-       instance.setAccessToken(prefs.getString(Constants.ACCESS_TOKEN, null));
-       instance.setRefreshToken((prefs.getString(Constants.REFRESH_TOKEN, null)));
+       instance.setAccessToken(prefs.getString(PrefsConstants.ACCESS_TOKEN, null));
+       instance.setRefreshToken((prefs.getString(PrefsConstants.REFRESH_TOKEN, null)));
        return instance;
    }
 

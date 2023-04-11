@@ -48,7 +48,7 @@ import vn.edu.ecomapp.api.ProfileApi;
 import vn.edu.ecomapp.dto.profile.ProfileResponse;
 import vn.edu.ecomapp.model.Customer;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
-import vn.edu.ecomapp.util.Constants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.FragmentManager;
 import vn.edu.ecomapp.util.RealPathUtil;
 import vn.edu.ecomapp.util.prefs.CustomerManager;
@@ -74,9 +74,9 @@ public class EditProfileFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         customerManager = CustomerManager
-                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_CUSTOMER, Context.MODE_PRIVATE));
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CUSTOMER, Context.MODE_PRIVATE));
         tokenManager = TokenManager
-                .getInstance(requireActivity().getSharedPreferences(Constants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
 
     }
 
