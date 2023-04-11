@@ -17,8 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.model.Slide;
-import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.dto.Slide;
 import vn.edu.ecomapp.util.constants.UrlConstants;
 
 public class SliderAdapter extends  RecyclerView.Adapter<SliderAdapter.ViewHolder>{

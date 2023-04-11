@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.model.PaymentMethod;
+import vn.edu.ecomapp.dto.PaymentMethod;
 import vn.edu.ecomapp.view.adapter.listener.OnItemClickListener;
 
 public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHolder> {

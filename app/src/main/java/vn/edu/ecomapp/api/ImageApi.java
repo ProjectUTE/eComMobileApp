@@ -5,7 +5,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
-import vn.edu.ecomapp.model.ImagePreview;
+import vn.edu.ecomapp.dto.ImagePreview;
 
 public interface ImageApi {
     @GET("image/get-all-image-by-product-id/{id}")

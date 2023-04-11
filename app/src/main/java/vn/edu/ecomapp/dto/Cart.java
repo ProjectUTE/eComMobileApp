@@ -3,8 +3,6 @@ package vn.edu.ecomapp.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import vn.edu.ecomapp.model.LineItem;
-
 public class Cart {
     List<LineItem> lineItems = new ArrayList<>();
 

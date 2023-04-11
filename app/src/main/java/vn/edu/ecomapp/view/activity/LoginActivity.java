@@ -5,8 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -31,7 +29,6 @@ import vn.edu.ecomapp.controller.LoginController;
 import vn.edu.ecomapp.dto.login.Login;
 import vn.edu.ecomapp.dto.login.LoginRequest;
 import vn.edu.ecomapp.services.oauth2.GoogleAuthManager;
-import vn.edu.ecomapp.util.constants.DrawablePositionConstants;
 import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.constants.RoleCodeConstants;
 import vn.edu.ecomapp.util.prefs.DataLoginManager;
@@ -74,6 +71,8 @@ public class LoginActivity extends AppCompatActivity {
         googleSignInClient = GoogleAuthManager.getGoogleSignInClient(this, googleSignInOptions);
         loginController = new LoginController(this);
         initializeComponents();
+
+
     }
 
     private void loginWithGoogle() {

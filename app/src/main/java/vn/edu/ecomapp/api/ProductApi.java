@@ -6,7 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import vn.edu.ecomapp.model.Product;
+import vn.edu.ecomapp.dto.Product;
 
 public interface ProductApi {
     @GET("product/get-detail-product-by-id/{id}")

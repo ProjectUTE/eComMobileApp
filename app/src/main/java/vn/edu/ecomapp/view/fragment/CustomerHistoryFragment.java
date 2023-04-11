@@ -22,7 +22,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.api.OrderApi;
-import vn.edu.ecomapp.model.Order;
+import vn.edu.ecomapp.dto.Order;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.FragmentManager;

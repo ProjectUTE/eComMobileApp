@@ -1,6 +1,7 @@
 package vn.edu.ecomapp.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,9 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
-import java.lang.invoke.ConstantCallSite;
 import java.util.List;
 
 import retrofit2.Call;
@@ -27,17 +25,16 @@ import retrofit2.Response;
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.api.ImageApi;
 import vn.edu.ecomapp.api.ProductApi;
-import vn.edu.ecomapp.dto.Cart;
-import vn.edu.ecomapp.model.ImagePreview;
-import vn.edu.ecomapp.model.LineItem;
-import vn.edu.ecomapp.model.Product;
+import vn.edu.ecomapp.dto.ImagePreview;
+import vn.edu.ecomapp.dto.Product;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
+import vn.edu.ecomapp.room.database.CartDatabase;
+import vn.edu.ecomapp.room.entities.CartItem;
 import vn.edu.ecomapp.util.CurrencyFormat;
 import vn.edu.ecomapp.util.FragmentManager;
 import vn.edu.ecomapp.util.Random;
 import vn.edu.ecomapp.util.constants.PrefsConstants;
-import vn.edu.ecomapp.util.constants.UrlConstants;
-import vn.edu.ecomapp.util.prefs.CartManager;
+import vn.edu.ecomapp.util.prefs.CustomerManager;
 import vn.edu.ecomapp.util.prefs.ProductManager;
 import vn.edu.ecomapp.util.prefs.TokenManager;
 import vn.edu.ecomapp.view.adapter.ImagePreviewAdapter;
@@ -49,21 +46,21 @@ public class ProductDetailFragment extends Fragment {
     TextView addToCartButton;
     RecyclerView imagePreviewsRecycerView;
     List<ImagePreview> imagePreviews;
-    CartManager cartManager;
     ProductManager productManager;
-    Cart cart;
-    String productId;
+    String productId, cartId;
     ProductApi productApi;
     ImageApi imageApi;
     TokenManager tokenManager;
     TextView tvCost, tvName, tvDetail;
     Product productDetail;
+    CustomerManager customerManager;
+    ProgressDialog pd;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        cartManager = CartManager
-                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CART, Context.MODE_PRIVATE));
+       customerManager = CustomerManager
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CUSTOMER, Context.MODE_PRIVATE));
         productManager = ProductManager
                 .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_PRODUCT, Context.MODE_PRIVATE));
         tokenManager = TokenManager
@@ -77,17 +74,18 @@ public class ProductDetailFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_product_detail, container, false);
     }
 
-    private LineItem getLineItem() {
+    private CartItem getCartItem() {
         int quantity = 1;
         int price = CurrencyFormat.convertVNCurrencyToInt(tvCost.getText().toString());
         int amount = quantity * price;
-        LineItem lineItem = new LineItem();
+        CartItem lineItem = new CartItem();
         lineItem.setId(Random.randomId("LI"));
         lineItem.setProductId(productId);
         lineItem.setName(tvName.getText().toString());
         lineItem.setQuantity(quantity);
         lineItem.setPrice(price);
         lineItem.setAmount(amount);
+        lineItem.setCartId(cartId);
         return lineItem;
     }
 
@@ -102,25 +100,42 @@ public class ProductDetailFragment extends Fragment {
         appBarTitle = view.findViewById(R.id.appBarTitle);
         addToCartButton = view.findViewById(R.id.addToCartButton);
         image = view.findViewById(R.id.image);
+        pd = new ProgressDialog(getContext());
+        pd.setCanceledOnTouchOutside(false);
 
-        cart = cartManager.getCart();
         productId = productManager.getProductId();
+        cartId = customerManager.getCustomer().getCustomerId();
         productApi = RetrofitClient.createApiWithAuth(ProductApi.class, tokenManager);
         imageApi = RetrofitClient.createApiWithAuth(ImageApi.class, tokenManager);
         imagePreviewsRecycerView = view.findViewById(R.id.recyclerViewImagesPreview);
 
         backButton.setOnClickListener(view1 -> requireActivity().getSupportFragmentManager().popBackStack());
         addToCartButton.setOnClickListener(view2 -> {
-            LineItem lineItem = getLineItem();
-            cart.addLineItem(lineItem);
-            cartManager.saveCart(cart);
+            CartItem item = CartDatabase.getInstance(getContext()).cartItemDao()
+                    .getCartItemByCartIdAndProductId(cartId, productId);
+            if(item != null) {
+                // Update
+                Log.d("PD", "Update");
+                CartItem cartItem =
+                        CartDatabase.getInstance(getContext()).cartItemDao()
+                                .getCartItemByCartIdAndProductId(cartId, productId);
+                cartItem.setQuantity(cartItem.getQuantity() + 1);
+                cartItem.setAmount(cartItem.getQuantity() * cartItem.getPrice());
+                CartDatabase.getInstance(getContext()).cartItemDao().updateCartItem(cartItem);
+            } else {
+                // Create
+                Log.d("PD", "CREATE");
+                CartDatabase.getInstance(getContext()).cartItemDao().insertCartItem(getCartItem());
+            }
             FragmentManager.nextFragment(requireActivity(), new CustomerCartFragment());
         });
 
         if(productId == null || productId.equals("")) return;
+        pd.show();
         productApi.getProductById(productId).enqueue(new Callback<Product>() {
             @Override
             public void onResponse(@NonNull Call<Product> call, @NonNull Response<Product> response) {
+                pd.dismiss();
                 if(response.body() == null) return;
                 productDetail = response.body();
                 String cost = CurrencyFormat.VietnameseCurrency(productDetail.getNewPrice());
@@ -128,15 +143,16 @@ public class ProductDetailFragment extends Fragment {
                 tvName.setText(productDetail.getName());
                 appBarTitle.setText(productDetail.getName());
                 tvDetail.setText(productDetail.getDetail());
-                if(productDetail.getMainImage() == null || productDetail.getMainImage().equals("")) return;
-                String imageUrlReplaced = productDetail.getMainImage()
-                                .replace(UrlConstants.BASE_URL_LOCAL, UrlConstants.BASE_URL)
-                                        .replace(" ", "%20");
-//                Glide.with(requireContext()).load(imageUrlReplaced).into(image);
+//                if(productDetail.getMainImage() == null || productDetail.getMainImage().equals("")) return;
+//                String imageUrlReplaced = productDetail.getMainImage()
+//                                .replace(UrlConstants.BASE_URL_LOCAL, UrlConstants.BASE_URL)
+//                                        .replace(" ", "%20");
+////                Glide.with(requireContext()).load(imageUrlReplaced).into(image);
             }
 
             @Override
             public void onFailure(@NonNull Call<Product> call, @NonNull Throwable t) {
+                pd.dismiss();
                 Log.d("Get product detail", t.getMessage());
             }
         });

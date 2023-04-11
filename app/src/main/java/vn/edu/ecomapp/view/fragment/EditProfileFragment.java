@@ -46,7 +46,7 @@ import retrofit2.Response;
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.api.ProfileApi;
 import vn.edu.ecomapp.dto.profile.ProfileResponse;
-import vn.edu.ecomapp.model.Customer;
+import vn.edu.ecomapp.dto.Customer;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.FragmentManager;

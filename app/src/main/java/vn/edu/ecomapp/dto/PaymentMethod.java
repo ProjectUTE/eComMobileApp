@@ -1,7 +1,12 @@
-package vn.edu.ecomapp.model;
+package vn.edu.ecomapp.dto;
 
-public class Category {
+public class PaymentMethod {
     String id, name;
+
+    public PaymentMethod(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public String getId() {
         return id;
@@ -16,11 +21,6 @@ public class Category {
     }
 
     public void setName(String name) {
-        this.name = name;
-    }
-
-    public Category(String id, String name) {
-        this.id = id;
         this.name = name;
     }
 }

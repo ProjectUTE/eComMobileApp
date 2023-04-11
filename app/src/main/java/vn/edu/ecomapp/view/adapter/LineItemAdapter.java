@@ -12,8 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.model.LineItem;
-import vn.edu.ecomapp.model.Order;
+import vn.edu.ecomapp.dto.LineItem;
 
 public class LineItemAdapter extends RecyclerView.Adapter<LineItemAdapter.ViewHolder>{
 

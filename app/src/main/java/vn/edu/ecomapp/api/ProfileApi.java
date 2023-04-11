@@ -1,9 +1,5 @@
 package vn.edu.ecomapp.api;
 
-import com.paypal.pyplcheckout.pojo.User;
-
-import java.util.List;
-
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -13,8 +9,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import vn.edu.ecomapp.dto.profile.ProfileResponse;
-import vn.edu.ecomapp.model.Customer;
-import vn.edu.ecomapp.model.Slide;
+import vn.edu.ecomapp.dto.Customer;
 
 public interface ProfileApi {
     @GET("profile/get/{id}")

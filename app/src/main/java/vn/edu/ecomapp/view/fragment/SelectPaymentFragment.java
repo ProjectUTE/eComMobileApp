@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.model.PaymentMethod;
+import vn.edu.ecomapp.dto.PaymentMethod;
 import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.FragmentManager;
 import vn.edu.ecomapp.util.prefs.PaymentManager;

@@ -3,19 +3,18 @@ package vn.edu.ecomapp.view.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.paypal.checkout.PayPalCheckout;
 import com.paypal.checkout.config.CheckoutConfig;
@@ -31,36 +30,36 @@ import com.paypal.checkout.order.PurchaseUnit;
 import com.paypal.checkout.paymentbutton.PayPalButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.model.LineItem;
+import vn.edu.ecomapp.room.database.CartDatabase;
+import vn.edu.ecomapp.room.entities.CartWithCartItem;
+import vn.edu.ecomapp.util.CurrencyFormat;
+import vn.edu.ecomapp.util.FragmentManager;
 import vn.edu.ecomapp.util.constants.PaymentCodeConstants;
 import vn.edu.ecomapp.util.constants.PrefsConstants;
-import vn.edu.ecomapp.util.FragmentManager;
-import vn.edu.ecomapp.util.prefs.CartManager;
+import vn.edu.ecomapp.util.prefs.CustomerManager;
 import vn.edu.ecomapp.util.prefs.PaymentManager;
 import vn.edu.ecomapp.view.adapter.CheckoutAdapter;
 
 public class CheckoutFragment extends Fragment {
 
-    CartManager cartManager;
-    List<LineItem> lineItems;
     RecyclerView rcvCheckout;
-
+    TextView tvItemTotal, tvDelivery, tvTotal;
     TextView appBarTitle;
     ImageView backButton;
     TextView placeOrderBtn;
     PayPalButton payPalButton;
     PaymentManager paymentManager;
+    CustomerManager customerManager;
+    String cartId;
     private static final  String CLIENT_ID = "ASkkqIO3hfOoZfMWh5u6wF1a3cp2jAzTaD0e1eN8yhE4CMtsJNKewg8ah7xTqhZRGoXfjaTARkQRDz75";
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        cartManager = CartManager
-                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CART, Context.MODE_PRIVATE));
-
+        customerManager = CustomerManager
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CUSTOMER, Context.MODE_PRIVATE));
         paymentManager = PaymentManager
                 .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_PAYMENT, Context.MODE_PRIVATE));
     }
@@ -83,6 +82,11 @@ public class CheckoutFragment extends Fragment {
         appBarTitle.setText("Place Order");
         backButton = view.findViewById(R.id.backButton);
         payPalButton = view.findViewById(R.id.payPalButton);
+        tvItemTotal = view.findViewById(R.id.totalItem);
+        tvDelivery = view.findViewById(R.id.delivery);
+        tvTotal = view.findViewById(R.id.total);
+        cartId = customerManager.getCustomer().getCustomerId();
+
         backButton.setOnClickListener(view1 -> FragmentManager.backFragment(requireActivity()));
         if(paymentManager.getPaymentId().equals(PaymentCodeConstants.PAYMENT_CASH)) {
             payPalButton.setVisibility(View.INVISIBLE);
@@ -90,12 +94,18 @@ public class CheckoutFragment extends Fragment {
             placeOrderBtn.setVisibility(View.INVISIBLE);
         }
         setUpPayPal();
-        if(cartManager == null) return;
-        lineItems = cartManager.getCart().getLineItems();
-        CheckoutAdapter adapter = new CheckoutAdapter(getContext(), lineItems);
+       CartWithCartItem item = CartDatabase.getInstance(getContext()).cartDao().getCartWithCartItemByCartId(cartId);
+        CheckoutAdapter adapter = new CheckoutAdapter(getContext(), item.getCartItems());
         LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcvCheckout.setAdapter(adapter);
         rcvCheckout.setLayoutManager(layout);
+        loadSummary();
+    }
+    private void loadSummary() {
+        int itemsTotal = CartDatabase.getInstance(getContext()).cartItemDao().getItemsTotal(cartId);
+        tvItemTotal.setText(CurrencyFormat.VietnameseCurrency(itemsTotal));
+        tvDelivery.setText(CurrencyFormat.VietnameseCurrency(0));
+        tvTotal.setText(CurrencyFormat.VietnameseCurrency(itemsTotal));
     }
 
     @SuppressLint("LongLogTag")

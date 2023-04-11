@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.model.LineItem;
+import vn.edu.ecomapp.dto.LineItem;
 import vn.edu.ecomapp.view.adapter.LineItemAdapter;
 
 public class LineItemFragment extends Fragment {

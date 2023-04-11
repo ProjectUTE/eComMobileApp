@@ -1,4 +1,4 @@
-package vn.edu.ecomapp.model;
+package vn.edu.ecomapp.dto;
 
 public class LineItem {
 

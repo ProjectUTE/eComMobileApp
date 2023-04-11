@@ -16,27 +16,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.dto.Cart;
-import vn.edu.ecomapp.model.LineItem;
-import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.room.database.CartDatabase;
+import vn.edu.ecomapp.room.entities.CartItem;
+import vn.edu.ecomapp.room.entities.CartWithCartItem;
 import vn.edu.ecomapp.util.CurrencyFormat;
 import vn.edu.ecomapp.util.FragmentManager;
-import vn.edu.ecomapp.util.prefs.CartManager;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.util.prefs.CustomerManager;
 import vn.edu.ecomapp.view.adapter.CartAdapter;
 
 public class CustomerCartFragment  extends Fragment {
 
     RecyclerView recyclerViewCart;
-    TextView checkoutButton, tvtotalItems, btnPlus, btnMinus, tvLineItemid;
-    CartManager cartManager;
-    Cart cart;
-
-    String lineItemId;
+    TextView checkoutButton, tvtotalItems, btnPlus, btnMinus, tvProductId;
+    CustomerManager customerManager;
+    CartAdapter cartAdapter;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        cartManager = CartManager
+        customerManager = CustomerManager
                 .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CART, Context.MODE_PRIVATE));
     }
 
@@ -56,16 +55,50 @@ public class CustomerCartFragment  extends Fragment {
     }
 
     private void loadSummary() {
-        if(cart == null) return;
-        tvtotalItems.setText(CurrencyFormat.VietnameseCurrency(cart.getTotalItems()));
+        String customerId = customerManager.getCustomer().getCustomerId();
+        int itemsTotal = CartDatabase.getInstance(getContext()).cartItemDao().getItemsTotal(customerId);
+        tvtotalItems.setText(CurrencyFormat.VietnameseCurrency(itemsTotal));
     }
 
     @SuppressLint("LongLogTag")
     private void initComponents(View view) {
         checkoutButton = view.findViewById(R.id.checkoutButton);
         tvtotalItems = view.findViewById(R.id.totalItem);
-        cart = cartManager.getCart();
         checkoutButton.setOnClickListener(view1 -> FragmentManager.nextFragment(requireActivity(), new SelectPaymentFragment()));
+        cartAdapter = new CartAdapter();
+        cartAdapter.setContext(getContext());
+        cartAdapter.setOnItemClickListener((position, view1) -> {
+            btnPlus = view1.findViewById(R.id.button_plus);
+            btnMinus = view1.findViewById(R.id.button_minus);
+            tvProductId = view1.findViewById(R.id.productId);
+            String cartId = customerManager.getCustomer().getCustomerId();
+            String productId = tvProductId.getText().toString();
+            btnPlus.setOnClickListener(view2 -> {
+                CartItem item = CartDatabase.getInstance(getContext()).cartItemDao()
+                        .getCartItemByCartIdAndProductId(cartId, productId);
+                item.setQuantity(item.getQuantity() + 1);
+                item.setAmount(item.getQuantity() * item.getPrice());
+                CartDatabase.getInstance(getContext()).cartItemDao()
+                        .updateCartItem(item);
+                loadRecyclerViewCart(view);
+                loadSummary();
+            });
+
+            btnMinus.setOnClickListener(view3 -> {
+                CartItem item = CartDatabase.getInstance(getContext()).cartItemDao()
+                        .getCartItemByCartIdAndProductId(cartId, productId);
+                if (item.getQuantity() > 1) {
+                    item.setQuantity(item.getQuantity() - 1);
+                    item.setAmount(item.getQuantity() * item.getPrice());
+                    CartDatabase.getInstance(getContext()).cartItemDao()
+                            .updateCartItem(item);
+                } else if (item.getQuantity() == 1) {
+                    CartDatabase.getInstance(getContext()).cartItemDao().deleteCartItem(item);
+                }
+                loadRecyclerViewCart(view);
+                loadSummary();
+            });
+        });
     }
 
     @Override
@@ -73,56 +106,14 @@ public class CustomerCartFragment  extends Fragment {
         super.onDestroy();
     }
 
-    private void updateCart() {
-        cart = cartManager.getCart();
-    }
     @SuppressLint("NotifyDataSetChanged")
     private void loadRecyclerViewCart(View view) {
-        if(cart == null) return;
+        String customerId = customerManager.getCustomer().getCustomerId();
+        CartWithCartItem data = CartDatabase.getInstance(getContext()).cartDao().getCartWithCartItemByCartId(customerId);
         recyclerViewCart = view.findViewById(R.id.recycler_view_cart);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerViewCart.setLayoutManager(linearLayoutManager);
-        CartAdapter cartAdapter = new CartAdapter(getContext(), cart.getLineItems());
+        cartAdapter.setLineItems(data.getCartItems());
         recyclerViewCart.setAdapter(cartAdapter);
-        cartAdapter.setOnItemClickListener((position, view1) -> {
-            btnPlus = view1.findViewById(R.id.button_plus);
-            btnMinus = view1.findViewById(R.id.button_minus);
-            tvLineItemid = view1.findViewById(R.id.lineItemId);
-            lineItemId = tvLineItemid.getText().toString();
-            btnPlus.setOnClickListener(view2 -> {
-               Log.d("CART", "Plus button");
-               if(cart == null) return;
-               LineItem itemInCart = null;
-               LineItem itemExtra = new LineItem();
-               for (LineItem i : cart.getLineItems()) {
-                    if(i.getId().equals(lineItemId)) {
-                        itemInCart = i;
-                        break;
-                    }
-               }
-               if(itemInCart == null) return;
-                int quantity = 1;
-                int price = itemInCart.getPrice();
-                int total = quantity * price;
-                itemExtra.setId(lineItemId);
-                itemExtra.setQuantity(1);
-                itemExtra.setProductId(itemInCart.getProductId());
-                itemExtra.setPrice(price);
-                itemExtra.setAmount(total);
-                cart.addLineItem(itemExtra);
-                cartManager.saveCart(cart);
-                cartAdapter.notifyDataSetChanged();
-                updateCart();
-                loadSummary();
-            });
-
-            btnMinus.setOnClickListener(view3 -> {
-                Log.d("CART", "Minus button");
-                cart.removeLineItem(lineItemId);
-                cartAdapter.notifyDataSetChanged();
-                updateCart();
-                loadSummary();
-            });
-        });
     }
 }

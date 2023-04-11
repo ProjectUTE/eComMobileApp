@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.model.Category;
+import vn.edu.ecomapp.dto.Category;
 import vn.edu.ecomapp.view.adapter.listener.OnItemClickListener;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {

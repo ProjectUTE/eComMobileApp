@@ -59,6 +59,9 @@ dependencies {
             because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
         }
     }
+    implementation "androidx.room:room-runtime:2.5.1"
+    annotationProcessor "androidx.room:room-compiler:2.5.1"
+
     implementation 'com.paypal.sdk:paypal-android-sdk:2.16.0'
     implementation 'com.paypal.checkout:android-sdk:0.8.8'
     testImplementation 'junit:junit:4.13.2'

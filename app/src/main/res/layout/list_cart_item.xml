@@ -79,7 +79,8 @@
         android:textSize="16sp"
         />
     <TextView
-        android:id="@+id/lineItemId"
+        android:visibility="invisible"
+        android:id="@+id/productId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />

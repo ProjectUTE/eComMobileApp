@@ -15,8 +15,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.model.ImagePreview;
-import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.dto.ImagePreview;
 import vn.edu.ecomapp.util.constants.UrlConstants;
 
 public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapter.ViewHolder> {

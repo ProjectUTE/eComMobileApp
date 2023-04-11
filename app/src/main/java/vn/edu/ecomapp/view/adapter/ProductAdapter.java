@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.model.Product;
+import vn.edu.ecomapp.dto.Product;
 import vn.edu.ecomapp.util.CurrencyFormat;
 import vn.edu.ecomapp.view.adapter.listener.OnItemClickListener;
 

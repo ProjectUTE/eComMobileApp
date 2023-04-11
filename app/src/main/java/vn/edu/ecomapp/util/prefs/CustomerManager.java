@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
-import vn.edu.ecomapp.model.Customer;
+import vn.edu.ecomapp.dto.Customer;
 import vn.edu.ecomapp.util.constants.PrefsConstants;
 
 public class CustomerManager {

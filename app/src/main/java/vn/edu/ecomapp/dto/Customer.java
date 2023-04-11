@@ -1,4 +1,4 @@
-package vn.edu.ecomapp.model;
+package vn.edu.ecomapp.dto;
 
 public class Customer {
     String customerId = "", email = "", avatar = "", displayName = "", givenName = "", familyName = "", phonenumber = "";

@@ -14,25 +14,43 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.model.LineItem;
+import vn.edu.ecomapp.room.entities.CartItem;
 import vn.edu.ecomapp.util.CurrencyFormat;
 import vn.edu.ecomapp.view.adapter.listener.OnItemClickListener;
 
 public class CartAdapter  extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
-
     Context context;
 
-    List<LineItem> lineItems;
+    List<CartItem> lineItems;
 
     private OnItemClickListener listener;
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
-    public CartAdapter(Context context, List<LineItem> lineItems) {
+    public CartAdapter(Context context, List<CartItem> lineItems) {
         this.context = context;
         this.lineItems = lineItems;
     }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public List<CartItem> getLineItems() {
+        return lineItems;
+    }
+
+    public void setLineItems(List<CartItem> lineItems) {
+        this.lineItems = lineItems;
+        notifyDataSetChanged();
+    }
+
+    public CartAdapter() {}
 
     @NonNull
     @Override
@@ -43,7 +61,7 @@ public class CartAdapter  extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull CartAdapter.ViewHolder holder, int position) {
-        final LineItem lineItem = lineItems.get(position);
+        final CartItem lineItem = lineItems.get(position);
         if(lineItem == null) return;
         holder.setId(lineItem);
         holder.setTitle(lineItem);
@@ -67,7 +85,7 @@ public class CartAdapter  extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvLineItemId = itemView.findViewById(R.id.lineItemId);
+            tvLineItemId = itemView.findViewById(R.id.productId);
             textViewTitle = itemView.findViewById(R.id.text_view_title);
             tvPrice = itemView.findViewById(R.id.price);
             textViewQuantity = itemView.findViewById(R.id.text_view_quantity);
@@ -76,23 +94,23 @@ public class CartAdapter  extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
             imageView = itemView.findViewById(R.id.imageView);
         }
 
-        public void setId(LineItem item) {
+        public void setId(CartItem item) {
            if(item == null)  return;
-           tvLineItemId.setText(item.getId());
+           tvLineItemId.setText(item.getProductId());
         }
 
-        public void setTitle(LineItem lineItem) {
+        public void setTitle(CartItem lineItem) {
             if(lineItem == null) return;
             textViewTitle.setText(lineItem.getName());
         }
 
-        public void setQuantity(LineItem lineItem) {
+        public void setQuantity(CartItem lineItem) {
             if(lineItem == null) return;
             @SuppressLint("DefaultLocale") String quantityStr = String.format("%d", lineItem.getQuantity());
             textViewQuantity.setText(quantityStr);
         }
 
-        public void setPrice(LineItem lineItem) {
+        public void setPrice(CartItem lineItem) {
             if(lineItem == null) return;
             String priceStr = CurrencyFormat.VietnameseCurrency(lineItem.getPrice());
             tvPrice.setText(priceStr);
