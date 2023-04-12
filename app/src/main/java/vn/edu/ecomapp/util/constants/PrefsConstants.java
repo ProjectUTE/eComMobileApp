@@ -35,4 +35,7 @@ public class PrefsConstants {
    public static final String  PRODUCT_ID = "PRODUCT_ID";
     public static final String  DATA_PRODUCT = "DATA_PRODUCT";
 
+    // Cookie
+    public static final String  COOKIE_DATA = "COOKIE_DATA";
+    public static final String  COOKIE_ID = "COOKIE_ID";
 }

@@ -29,6 +29,8 @@ import vn.edu.ecomapp.dto.signup.SignUpResponse;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.util.AlertDialogMessage;
 import vn.edu.ecomapp.util.constants.HttpStatusConstants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.util.prefs.CookieManager;
 
 public class VerifyAccountActivity extends AppCompatActivity {
     TextInputLayout editTextVerifyCode;
@@ -37,6 +39,7 @@ public class VerifyAccountActivity extends AppCompatActivity {
     ProgressDialog pd;
 
     Gson gson = new GsonBuilder().create();
+    CookieManager cookieManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public class VerifyAccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_verify_account);
         pd = new ProgressDialog(VerifyAccountActivity.this);
         pd.setCanceledOnTouchOutside(false);
+        cookieManager = CookieManager.getInstance(getSharedPreferences(PrefsConstants.COOKIE_DATA, MODE_PRIVATE));
         initializeComponents();
         handleVerifyAccount();
     }
@@ -67,7 +71,9 @@ public class VerifyAccountActivity extends AppCompatActivity {
             String FORM_DATA = "multipart/form-data";
             RequestBody rbOTP = RequestBody.create(MediaType.parse(FORM_DATA), otpCode);
             pd.show();
-            authApi.verifyAccountUser(rbOTP).enqueue(new Callback<MessageResponse>() {
+            String cookie = cookieManager.getCookie();
+            Log.d("Verify", cookie);
+            authApi.verifyAccountUser(cookie, rbOTP).enqueue(new Callback<MessageResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<MessageResponse> call, @NonNull Response<MessageResponse> response) {
                     pd.dismiss();

@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -29,6 +30,8 @@ import vn.edu.ecomapp.dto.signup.SignUpResponse;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.util.AlertDialogMessage;
 import vn.edu.ecomapp.util.constants.HttpStatusConstants;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.util.prefs.CookieManager;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -37,12 +40,10 @@ public class SignUpActivity extends AppCompatActivity {
    Button buttonSignUp;
    String email = "", password = "", confirmPassword = "";
    AuthApi authApi;
-
    ProgressDialog pd;
    AlertDialog.Builder alBuilder;
-
-    Gson gson = new GsonBuilder().create();
-
+   Gson gson = new GsonBuilder().create();
+   CookieManager cookieManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +51,7 @@ public class SignUpActivity extends AppCompatActivity {
         pd = new ProgressDialog(SignUpActivity.this);
         pd.setCanceledOnTouchOutside(false);
         alBuilder = new AlertDialog.Builder(this);
+        cookieManager = CookieManager.getInstance(getSharedPreferences(PrefsConstants.COOKIE_DATA, MODE_PRIVATE));
         initializeComponents();
         initializeDatabase();
         handleTextViewClick();
@@ -95,6 +97,12 @@ public class SignUpActivity extends AppCompatActivity {
                         if(response.isSuccessful()) {
                             // Success
                             if(response.body() == null) return;
+
+                            // Get cookies
+                           List<String> Cookielist = response.headers().values("Set-Cookie");
+                           String jsessionid = (Cookielist .get(0).split(";"))[0];
+                            Log.d("cookieval", jsessionid);
+                            cookieManager.saveCookie(jsessionid);
                             if(response.body().getStatus().equals(HttpStatusConstants.SUCCESS)) {
                                 alBuilder.setTitle(response.body().getTitle());
                                 alBuilder.setMessage(response.body().getMessage());
@@ -109,7 +117,7 @@ public class SignUpActivity extends AppCompatActivity {
                         SignUpResponse signUpResponse;
                         try {
                             if(response.errorBody() == null) return;
-                            if(response.errorBody().string() == null) return;
+                            response.errorBody().string();
                             signUpResponse = gson.fromJson(response.errorBody().string(), SignUpResponse.class);
                             Log.d("SIGNUP", signUpResponse.getMessage());
                             Toast.makeText(SignUpActivity.this, signUpResponse.getMessage(), Toast.LENGTH_SHORT).show();

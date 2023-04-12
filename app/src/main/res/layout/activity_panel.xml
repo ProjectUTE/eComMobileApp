@@ -41,30 +41,4 @@
                 tools:ignore="VisualLintBottomNav" />
     </com.google.android.material.bottomappbar.BottomAppBar>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabCart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/cart"
-        app:backgroundTint="@color/white"
-        app:borderWidth="0dp"
-        app:tint="@color/orange"
-        app:layout_anchor="@id/bottomAppBar"
-        tools:ignore="ContentDescription,SpeakableTextPresentCheck"/>
-
-    <TextView
-        android:background="@drawable/button_orange"
-        android:id="@+id/panic_fab"
-        android:layout_width="35dp"
-        android:layout_height="wrap_content"
-        android:paddingVertical="3dp"
-        android:layout_gravity="bottom|center"
-        android:layout_marginLeft="40dp"
-        android:layout_marginBottom="70dp"
-        android:elevation="12dp"
-        app:elevation="6dp"
-        android:text="1"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

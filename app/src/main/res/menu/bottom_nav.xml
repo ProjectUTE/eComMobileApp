@@ -12,10 +12,9 @@
        android:icon="@drawable/food"
        />
    <item
-       android:enabled="false"
-       app:showAsAction="ifRoom"
-       android:title=""
+       android:title="Cart"
        android:id="@+id/cart"
+       android:icon="@drawable/cart"
        />
 
     <item

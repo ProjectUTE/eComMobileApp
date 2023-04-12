@@ -25,5 +25,8 @@ public interface CartItemDao {
 
    @Query("SELECT SUM(amount) as ItemsTotal FROM cart_item WHERE cart_item.cartId = :cartId")
     int getItemsTotal(String cartId);
+
+    @Query("SELECT COUNT(*) FROM cart_item WHERE cart_item.cartId = :cartId")
+    int getItemsCount(String cartId);
 }
 

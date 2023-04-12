@@ -17,6 +17,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -31,7 +34,6 @@ import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.room.database.CartDatabase;
 import vn.edu.ecomapp.room.entities.CartItem;
 import vn.edu.ecomapp.util.CurrencyFormat;
-import vn.edu.ecomapp.util.FragmentManager;
 import vn.edu.ecomapp.util.Random;
 import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.prefs.CustomerManager;
@@ -40,6 +42,8 @@ import vn.edu.ecomapp.util.prefs.TokenManager;
 import vn.edu.ecomapp.view.adapter.ImagePreviewAdapter;
 
 public class ProductDetailFragment extends Fragment {
+
+    BottomNavigationView bottomNavigationView;
 
     TextView appBarTitle;
     ImageView backButton, image;
@@ -76,6 +80,11 @@ public class ProductDetailFragment extends Fragment {
 
     private CartItem getCartItem() {
         int quantity = 1;
+        if(tvCost.getText().toString().equals(""))  {
+            Log.d("CHECK", "NULL");
+        } else {
+            Log.d("CHECK", "NOT NULL");
+        }
         int price = CurrencyFormat.convertVNCurrencyToInt(tvCost.getText().toString());
         int amount = quantity * price;
         CartItem lineItem = new CartItem();
@@ -99,15 +108,17 @@ public class ProductDetailFragment extends Fragment {
         backButton = view.findViewById(R.id.backButton);
         appBarTitle = view.findViewById(R.id.appBarTitle);
         addToCartButton = view.findViewById(R.id.addToCartButton);
+        bottomNavigationView = requireActivity().findViewById(R.id.bottomNav);
+        imagePreviewsRecycerView = view.findViewById(R.id.recyclerViewImagesPreview);
+        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.cart);
+        productApi = RetrofitClient.createApiWithAuth(ProductApi.class, tokenManager);
+        imageApi = RetrofitClient.createApiWithAuth(ImageApi.class, tokenManager);
+
         image = view.findViewById(R.id.image);
         pd = new ProgressDialog(getContext());
         pd.setCanceledOnTouchOutside(false);
-
         productId = productManager.getProductId();
         cartId = customerManager.getCustomer().getCustomerId();
-        productApi = RetrofitClient.createApiWithAuth(ProductApi.class, tokenManager);
-        imageApi = RetrofitClient.createApiWithAuth(ImageApi.class, tokenManager);
-        imagePreviewsRecycerView = view.findViewById(R.id.recyclerViewImagesPreview);
 
         backButton.setOnClickListener(view1 -> requireActivity().getSupportFragmentManager().popBackStack());
         addToCartButton.setOnClickListener(view2 -> {
@@ -126,8 +137,11 @@ public class ProductDetailFragment extends Fragment {
                 // Create
                 Log.d("PD", "CREATE");
                 CartDatabase.getInstance(getContext()).cartItemDao().insertCartItem(getCartItem());
+                int count = CartDatabase.getInstance(getContext()).cartItemDao().getItemsCount(cartId);
+                badgeDrawable.setVisible(true);
+                badgeDrawable.setNumber(count);
             }
-            FragmentManager.nextFragment(requireActivity(), new CustomerCartFragment());
+            bottomNavigationView.setSelectedItemId(R.id.cart);
         });
 
         if(productId == null || productId.equals("")) return;

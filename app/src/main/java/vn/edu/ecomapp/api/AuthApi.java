@@ -5,6 +5,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -23,5 +24,5 @@ public interface AuthApi {
 
     @POST("sign-up-account/verify-account")
     @Multipart
-    Call<MessageResponse> verifyAccountUser(@Part("otp-code") RequestBody otpCode);
+    Call<MessageResponse> verifyAccountUser(@Header("Cookie") String cookie, @Part("otp-code") RequestBody otpCode);
 }

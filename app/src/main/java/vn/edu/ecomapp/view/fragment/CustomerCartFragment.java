@@ -3,7 +3,6 @@ package vn.edu.ecomapp.view.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.room.database.CartDatabase;
@@ -31,6 +33,7 @@ public class CustomerCartFragment  extends Fragment {
     TextView checkoutButton, tvtotalItems, btnPlus, btnMinus, tvProductId;
     CustomerManager customerManager;
     CartAdapter cartAdapter;
+    BottomNavigationView bottomNavigationView;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -64,6 +67,10 @@ public class CustomerCartFragment  extends Fragment {
     private void initComponents(View view) {
         checkoutButton = view.findViewById(R.id.checkoutButton);
         tvtotalItems = view.findViewById(R.id.totalItem);
+        bottomNavigationView = requireActivity().findViewById(R.id.bottomNav);
+        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.cart);
+        badgeDrawable.setVisible(true);
+
         checkoutButton.setOnClickListener(view1 -> FragmentManager.nextFragment(requireActivity(), new SelectPaymentFragment()));
         cartAdapter = new CartAdapter();
         cartAdapter.setContext(getContext());
@@ -94,6 +101,8 @@ public class CustomerCartFragment  extends Fragment {
                             .updateCartItem(item);
                 } else if (item.getQuantity() == 1) {
                     CartDatabase.getInstance(getContext()).cartItemDao().deleteCartItem(item);
+                    int count = CartDatabase.getInstance(getContext()).cartItemDao().getItemsCount(cartId);
+                    badgeDrawable.setNumber(count);
                 }
                 loadRecyclerViewCart(view);
                 loadSummary();
