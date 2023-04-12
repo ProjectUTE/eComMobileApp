@@ -16,7 +16,7 @@ public interface CartDao {
 
    @Query("SELECT * FROM cart WHERE cart.id = :id")
    @Transaction
-   public CartWithCartItem getCartWithCartItemByCartId(String id);
+   CartWithCartItem getCartWithCartItemByCartId(String id);
 
    @Query("SELECT EXISTS(SELECT * FROM cart WHERE cart.id = :id)")
    boolean cartIsExits(String id);

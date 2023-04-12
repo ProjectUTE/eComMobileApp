@@ -1,6 +1,7 @@
 package vn.edu.ecomapp.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +38,7 @@ public class CustomerHistoryFragment extends Fragment {
     OrderApi orderApi;
     TokenManager tokenManager;
     CustomerManager customerManager;
+    ProgressDialog pd;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -64,6 +66,8 @@ public class CustomerHistoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeComponents(view);
+        pd = new ProgressDialog(getContext());
+        pd.setCanceledOnTouchOutside(false);
         orders = new ArrayList<>();
         orderApi = RetrofitClient.createApiWithAuth(OrderApi.class, tokenManager) ;
         loadOrderRecyclerView();
@@ -72,9 +76,13 @@ public class CustomerHistoryFragment extends Fragment {
 
     private void loadOrderRecyclerView() {
         String customerId = customerManager.getCustomer().getCustomerId();
+        pd.setTitle("My Orders");
+        pd.setMessage("Loading data, please wait");
+        pd.show();
         orderApi.getOrderByCustomerId(customerId).enqueue(new Callback<List<Order>>() {
             @Override
             public void onResponse(@NonNull Call<List<Order>> call, @NonNull Response<List<Order>> response) {
+                pd.dismiss();
                 Log.d("Order", "Success");
                 if(response.body() == null) return;
                 orders = response.body();
@@ -87,6 +95,7 @@ public class CustomerHistoryFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<Order>> call, @NonNull Throwable t) {
+                pd.dismiss();
                 Log.d("Order", t.getMessage());
             }
         });
