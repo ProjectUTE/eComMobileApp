@@ -28,5 +28,8 @@ public interface CartItemDao {
 
     @Query("SELECT COUNT(*) FROM cart_item WHERE cart_item.cartId = :cartId")
     int getItemsCount(String cartId);
+
+     @Query("DELETE FROM cart_item WHERE cart_item.cartId = :cartId")
+     void deleteCartItemsByCartId(String cartId);
 }
 

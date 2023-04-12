@@ -42,13 +42,14 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
     public void onBindViewHolder(@NonNull OrderAdapter.ViewHolder holder, int position) {
         final Order order = orders.get(position);
         if(order == null) return;
-        setId(order);
-        setDate(order);
-        setAddress(order);
-        setPaymentMethod(order);
-        setQuantityProduct(order);
-        setTotalPrice(order);
-        holder.itemView.setOnClickListener(view -> listener.onItemClick(position, view));
+        holder.setId(order);
+        holder.setDate(order);
+        holder.setAddress(order);
+        holder.setPaymentMethod(order);
+        holder.setQuantityProduct(order);
+        holder.setTotalPrice(order);
+        holder.setStatus(order);
+        holder.setOnClickListener(position, holder.itemView);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
         return orders.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public  class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvId, tvDate, tvAddress, tvStatus, tvPaymentMethod, tvQuantityProduct,tvTotal;
 
         public ViewHolder(@NonNull View itemView) {
@@ -70,19 +71,32 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
             tvQuantityProduct = itemView.findViewById(R.id.quantityValue);
             tvTotal = itemView.findViewById(R.id.totalValue);
         }
-    }
 
-    private void setId(Order order) {
+        private void setId(Order order) {
+            if(order == null) return;
+            tvId.setText(order.getId());
+        }
+        public void setDate(Order order) {
+            if(order.getDate() == null) return;
+            tvDate.setText(order.getDate());
+        }
+        public void setAddress(Order order) {}
+        public void setStatus(Order order) {
+            if(order.getStatus() == null) return;
+            tvStatus.setText(order.getStatus());
+        }
+        public void setPaymentMethod(Order order) {
+            if (order.getMethod() == null)  return;
+            tvPaymentMethod.setText(order.getMethod());
+        }
+        public void setQuantityProduct(Order order) {
+            tvQuantityProduct.setText(String.format("%d", order.getTotal()));
+        }
+        public void setTotalPrice(Order order) {
+        }
 
+        public void setOnClickListener(int position, View itemView) {
+            itemView.setOnClickListener(view -> listener.onItemClick(position, view) );
+        }
     }
-    private void setDate(Order order) {
-
-    }
-    private void setAddress(Order order) {}
-    private void setStatus(Order order) {}
-    private void setPaymentMethod(Order order) {}
-    private void setQuantityProduct(Order order) {
-
-    }
-    private void setTotalPrice(Order order) {}
 }

@@ -1,21 +1,41 @@
 package vn.edu.ecomapp.dto;
 
+import java.util.List;
+
+import vn.edu.ecomapp.room.entities.CartItem;
+
 public class Order {
     private String id;
     private String date;
-    private String address;
     private String status;
+    private String method;
+    private List<LineItem>  lineItems;
+    String orderBy;
 
-   public  Order() {}
+    public String getOrderBy() {
+        return orderBy;
+    }
 
-    public Order(String id, String date, String address, String status, String paymentMethod, String quantityProduct, String totalPrice) {
-        this.id = id;
-        this.date = date;
-        this.address = address;
-        this.status = status;
-        this.paymentMethod = paymentMethod;
-        this.quantityProduct = quantityProduct;
-        this.totalPrice = totalPrice;
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    int total;
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public List<LineItem> getLineItems() {
+        return lineItems;
+    }
+
+    public void setLineItems(List<LineItem> lineItems) {
+        this.lineItems = lineItems;
     }
 
     public String getId() {
@@ -34,14 +54,6 @@ public class Order {
         this.date = date;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -50,31 +62,11 @@ public class Order {
         this.status = status;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
+    public String getMethod() {
+        return method;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public void setMethod(String method) {
+        this.method = method;
     }
-
-    public String getQuantityProduct() {
-        return quantityProduct;
-    }
-
-    public void setQuantityProduct(String quantityProduct) {
-        this.quantityProduct = quantityProduct;
-    }
-
-    public String getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(String totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    private String paymentMethod;
-    private String quantityProduct;
-    private String totalPrice;
 }

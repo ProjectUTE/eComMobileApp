@@ -13,4 +13,8 @@ public class CurrencyFormat {
         String priceReplaced = priceStr.replace("đ", "").replace(",", "");
         return Integer.parseInt(priceReplaced);
     }
+    public static int convertVNDToUSD(int money) {
+        final double rate = 23447.50;
+        return (int) Math.ceil(money / rate);
+    }
 }
