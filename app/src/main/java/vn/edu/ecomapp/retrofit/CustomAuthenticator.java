@@ -1,9 +1,13 @@
 package vn.edu.ecomapp.retrofit;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import okhttp3.Authenticator;
 import okhttp3.Request;
@@ -15,16 +19,19 @@ import vn.edu.ecomapp.dto.AccessToken;
 import vn.edu.ecomapp.dto.login.LoginRequest;
 import vn.edu.ecomapp.dto.login.LoginResponse;
 import vn.edu.ecomapp.util.constants.HttpStatusCodeConstants;
-import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.util.prefs.DataLoginRequestManager;
 import vn.edu.ecomapp.util.prefs.TokenManager;
 
 public class CustomAuthenticator  implements Authenticator {
     private final TokenManager tokenManager;
+    private static DataLoginRequestManager dataLoginRequestManager;
     private static CustomAuthenticator INSTANCE;
     private CustomAuthenticator(TokenManager tokenManager){
         this.tokenManager = tokenManager;
+
     }
-    static synchronized CustomAuthenticator getInstance(TokenManager tokenManager){
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    static synchronized CustomAuthenticator getInstance(TokenManager tokenManager, Objects contextObj){
         if(INSTANCE == null){
             INSTANCE = new CustomAuthenticator(tokenManager);
         }

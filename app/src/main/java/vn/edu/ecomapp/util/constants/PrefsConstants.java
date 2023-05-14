@@ -38,4 +38,7 @@ public class PrefsConstants {
     // Cookie
     public static final String  COOKIE_DATA = "COOKIE_DATA";
     public static final String  COOKIE_ID = "COOKIE_ID";
+    public static final String IS_GOOGLE_LOGIN = "IS_GOOGLE_LOGIN";
+    public static final String ROLE = "ROLE";
+    public static final String DATA_USER_LOGIN_REQUEST = "DATA_USER_LOGIN_REQUEST";
 }

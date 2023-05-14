@@ -13,15 +13,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.ecomapp.api.AuthApi;
 import vn.edu.ecomapp.dto.AccessToken;
+import vn.edu.ecomapp.dto.Customer;
 import vn.edu.ecomapp.dto.login.LoginRequest;
 import vn.edu.ecomapp.dto.login.LoginResponse;
-import vn.edu.ecomapp.dto.Customer;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.room.database.CartDatabase;
 import vn.edu.ecomapp.room.entities.Cart;
 import vn.edu.ecomapp.util.AlertDialogMessage;
 import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.prefs.CustomerManager;
+import vn.edu.ecomapp.util.prefs.DataLoginRequestManager;
 import vn.edu.ecomapp.util.prefs.TokenManager;
 import vn.edu.ecomapp.view.activity.PanelActivity;
 
@@ -30,12 +31,17 @@ public class LoginController {
     private final Context context;
     TokenManager tokenManager;
     CustomerManager customerManager;
+    DataLoginRequestManager dataLoginManager;
     final AuthApi authApi = RetrofitClient.createApi(AuthApi.class);
 
     public LoginController(Context context) {
         this.context = context;
-        tokenManager = TokenManager.getInstance(context.getSharedPreferences(PrefsConstants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
-        customerManager = CustomerManager.getInstance(context.getSharedPreferences(PrefsConstants.DATA_CUSTOMER, Context.MODE_PRIVATE));
+        tokenManager = TokenManager
+                .getInstance(context.getSharedPreferences(PrefsConstants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
+        customerManager = CustomerManager
+                .getInstance(context.getSharedPreferences(PrefsConstants.DATA_CUSTOMER, Context.MODE_PRIVATE));
+        dataLoginManager = DataLoginRequestManager
+                .getInstance(context.getSharedPreferences(PrefsConstants.DATA_USER_LOGIN_REQUEST, Context.MODE_PRIVATE));
     }
 
     public void handleLogin(LoginRequest loginRequest) {
@@ -56,6 +62,7 @@ public class LoginController {
                     Customer customer = new Customer();
                     customer.setCustomerId(response.body().getCustomerId());
                     customerManager.saveCustomer(customer);
+                    dataLoginManager.saveDataLoginRequest(loginRequest);
                     createCartIfNotExits(response.body().getCustomerId());
 
                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();

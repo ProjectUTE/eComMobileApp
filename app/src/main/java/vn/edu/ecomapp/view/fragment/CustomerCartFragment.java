@@ -34,6 +34,7 @@ public class CustomerCartFragment  extends Fragment {
     CustomerManager customerManager;
     CartAdapter cartAdapter;
     BottomNavigationView bottomNavigationView;
+    BadgeDrawable badgeDrawable;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -68,12 +69,27 @@ public class CustomerCartFragment  extends Fragment {
         checkoutButton = view.findViewById(R.id.checkoutButton);
         tvtotalItems = view.findViewById(R.id.totalItem);
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav);
-        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.cart);
+        badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.cart);
         badgeDrawable.setVisible(true);
 
         checkoutButton.setOnClickListener(view1 -> FragmentManager.nextFragment(requireActivity(), new SelectPaymentFragment()));
-        cartAdapter = new CartAdapter();
-        cartAdapter.setContext(getContext());
+        }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void loadRecyclerViewCart(View view) {
+        String customerId = customerManager.getCustomer().getCustomerId();
+        CartWithCartItem data = CartDatabase.getInstance(getContext()).cartDao().getCartWithCartItemByCartId(customerId);
+        recyclerViewCart = view.findViewById(R.id.recycler_view_cart);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerViewCart.setLayoutManager(linearLayoutManager);
+
+        cartAdapter = new CartAdapter(getContext(), data.getCartItems());
+        recyclerViewCart.setAdapter(cartAdapter);
         cartAdapter.setOnItemClickListener((position, view1) -> {
             btnPlus = view1.findViewById(R.id.button_plus);
             btnMinus = view1.findViewById(R.id.button_minus);
@@ -108,21 +124,5 @@ public class CustomerCartFragment  extends Fragment {
                 loadSummary();
             });
         });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private void loadRecyclerViewCart(View view) {
-        String customerId = customerManager.getCustomer().getCustomerId();
-        CartWithCartItem data = CartDatabase.getInstance(getContext()).cartDao().getCartWithCartItemByCartId(customerId);
-        recyclerViewCart = view.findViewById(R.id.recycler_view_cart);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        recyclerViewCart.setLayoutManager(linearLayoutManager);
-        cartAdapter.setLineItems(data.getCartItems());
-        recyclerViewCart.setAdapter(cartAdapter);
     }
 }

@@ -9,6 +9,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import vn.edu.ecomapp.dto.ForgotPasswordResponse;
 import vn.edu.ecomapp.dto.login.LoginRequest;
 import vn.edu.ecomapp.dto.login.LoginResponse;
 import vn.edu.ecomapp.dto.message.MessageResponse;
@@ -25,4 +26,8 @@ public interface AuthApi {
     @POST("sign-up-account/verify-account")
     @Multipart
     Call<MessageResponse> verifyAccountUser(@Header("Cookie") String cookie, @Part("otp-code") RequestBody otpCode);
+
+    @POST("login/forgot-password")
+    @Multipart
+    Call<ForgotPasswordResponse> sendEmailToResetPassword(@Part("email") RequestBody email);
 }

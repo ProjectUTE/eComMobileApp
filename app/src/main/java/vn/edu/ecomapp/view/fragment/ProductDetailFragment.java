@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -36,6 +37,7 @@ import vn.edu.ecomapp.room.entities.CartItem;
 import vn.edu.ecomapp.util.CurrencyFormat;
 import vn.edu.ecomapp.util.Random;
 import vn.edu.ecomapp.util.constants.PrefsConstants;
+import vn.edu.ecomapp.util.constants.UrlConstants;
 import vn.edu.ecomapp.util.prefs.CustomerManager;
 import vn.edu.ecomapp.util.prefs.ProductManager;
 import vn.edu.ecomapp.util.prefs.TokenManager;
@@ -157,11 +159,11 @@ public class ProductDetailFragment extends Fragment {
                 tvName.setText(productDetail.getName());
                 appBarTitle.setText(productDetail.getName());
                 tvDetail.setText(productDetail.getDetail());
-//                if(productDetail.getMainImage() == null || productDetail.getMainImage().equals("")) return;
-//                String imageUrlReplaced = productDetail.getMainImage()
-//                                .replace(UrlConstants.BASE_URL_LOCAL, UrlConstants.BASE_URL)
-//                                        .replace(" ", "%20");
-////                Glide.with(requireContext()).load(imageUrlReplaced).into(image);
+                if(productDetail.getMainImage() == null || productDetail.getMainImage().equals("")) return;
+                String imageUrlReplaced = productDetail.getMainImage()
+                                .replace(UrlConstants.BASE_URL_LOCAL, UrlConstants.BASE_URL)
+                                        .replace(" ", "%20");
+                Glide.with(requireContext()).load(imageUrlReplaced).into(image);
             }
 
             @Override

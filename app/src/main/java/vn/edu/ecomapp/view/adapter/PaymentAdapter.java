@@ -14,20 +14,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import vn.edu.ecomapp.R;
-import vn.edu.ecomapp.dto.PaymentMethod;
+import vn.edu.ecomapp.dto.payment.PaymentMethod;
+import vn.edu.ecomapp.dto.payment.PaymentMethodResponse;
 import vn.edu.ecomapp.view.adapter.listener.OnItemClickListener;
 
 public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHolder> {
 
     private OnItemClickListener listener;
     Context context;
-    List<PaymentMethod> paymentMethods;
+    List<PaymentMethodResponse> paymentMethods;
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
-    public PaymentAdapter(Context context, List<PaymentMethod> paymentMethods) {
+    public PaymentAdapter(Context context, List<PaymentMethodResponse> paymentMethods) {
         this.context = context;
         this.paymentMethods = paymentMethods;
     }
@@ -42,7 +43,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHold
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final PaymentMethod pm = paymentMethods.get(position);
+        final PaymentMethodResponse pm = paymentMethods.get(position);
         if(pm == null) return;
         holder.setName(pm);
         holder.setId(pm);
@@ -66,12 +67,12 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHold
             ivImage = itemView.findViewById(R.id.image);
         }
 
-        public void setName(PaymentMethod pm) {
+        public void setName(PaymentMethodResponse pm) {
            if (pm == null) return;
            tvName.setText(pm.getName());
         }
 
-        public void setId(PaymentMethod pm) {
+        public void setId(PaymentMethodResponse pm) {
             if (pm == null) return;
             tvId.setText(pm.getId());
         }

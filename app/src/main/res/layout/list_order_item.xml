@@ -24,7 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_width="@dimen/width_150"
             android:layout_height="wrap_content"
-            android:text="Code"
+            android:text="order id"
             android:textSize="@dimen/size_14"
             />
         <TextView
@@ -34,7 +34,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1234567"
             android:textSize="@dimen/size_14"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -64,7 +63,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mar 20 2023"
             android:textSize="@dimen/size_14"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -94,7 +92,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thu Duc City"
             android:textSize="@dimen/size_14"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -125,7 +122,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Processing"
             android:textSize="@dimen/size_14"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -149,16 +145,16 @@
             android:text="Payment method"
             android:textSize="@dimen/size_14"
             />
+
         <TextView
             android:id="@+id/pmValue"
-            android:fontFamily="@font/open_sans_bold"
-            app:layout_constraintStart_toEndOf="@id/pmLabel"
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PayPal"
+            android:fontFamily="@font/open_sans_bold"
             android:textSize="@dimen/size_14"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/pmLabel"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -187,7 +183,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2"
             android:textSize="@dimen/size_14"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -226,22 +221,9 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="138,000 VND"
             android:textSize="@dimen/size_16"
             android:textColor="@color/orange"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/detailButton"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="@dimen/margin_10"
-        android:background="@drawable/button_orange_corner_100"
-        android:text="Detail"
-        app:layout_constraintTop_toBottomOf="@id/totalContainer"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="@dimen/margin_10"
-        tools:ignore="TouchTargetSizeCheck"
-        tools:layout_editor_absoluteX="10dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
