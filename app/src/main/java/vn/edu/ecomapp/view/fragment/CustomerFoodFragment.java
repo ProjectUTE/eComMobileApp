@@ -69,8 +69,8 @@ public class CustomerFoodFragment  extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         categories = new ArrayList<>();
         products = new ArrayList<>();
-        categoryApi = RetrofitClient.createApiWithAuth(CategoryApi.class, tokenManager);
-        productApi = RetrofitClient.createApiWithAuth(ProductApi.class, tokenManager);
+        categoryApi = RetrofitClient.createApiWithAuthAndContext(CategoryApi.class, tokenManager, requireContext());
+        productApi = RetrofitClient.createApiWithAuthAndContext(ProductApi.class, tokenManager, requireContext());
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav);
         pd = new ProgressDialog(getContext());
         pd.setCanceledOnTouchOutside(false);

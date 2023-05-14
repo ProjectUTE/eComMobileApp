@@ -43,7 +43,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
         this.orders = orders;
         TokenManager tokenManager = TokenManager
                 .getInstance(context.getSharedPreferences(PrefsConstants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
-        lineItemApi = RetrofitClient.createApiWithAuth(LineItemApi.class, tokenManager);
+        lineItemApi = RetrofitClient.createApiWithAuthAndContext(LineItemApi.class, tokenManager, context);
     }
 
     @NonNull

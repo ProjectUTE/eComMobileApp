@@ -107,7 +107,7 @@ public class EditProfileFragment extends Fragment {
         btnUpload = view.findViewById(R.id.uploadAvatar);
         btnUpdate = view.findViewById(R.id.update);
         backButton = view.findViewById(R.id.backButton);
-        profileApi = RetrofitClient.createApiWithAuth(ProfileApi.class, tokenManager);
+        profileApi = RetrofitClient.createApiWithAuthAndContext(ProfileApi.class, tokenManager, requireContext());
         pd = new ProgressDialog(getContext());
         pd.setCanceledOnTouchOutside(false);
 

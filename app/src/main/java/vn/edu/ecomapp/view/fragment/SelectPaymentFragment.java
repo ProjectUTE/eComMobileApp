@@ -48,7 +48,7 @@ public class SelectPaymentFragment extends Fragment {
                 .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_PAYMENT, Context.MODE_PRIVATE));
         tokenManager = TokenManager
                 .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
-        methodApi = RetrofitClient.createApiWithAuth(PaymentMethodApi.class, tokenManager);
+        methodApi = RetrofitClient.createApiWithAuthAndContext(PaymentMethodApi.class, tokenManager, requireContext());
     }
 
     @Override

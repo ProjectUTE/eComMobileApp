@@ -113,8 +113,8 @@ public class ProductDetailFragment extends Fragment {
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav);
         imagePreviewsRecycerView = view.findViewById(R.id.recyclerViewImagesPreview);
         BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.cart);
-        productApi = RetrofitClient.createApiWithAuth(ProductApi.class, tokenManager);
-        imageApi = RetrofitClient.createApiWithAuth(ImageApi.class, tokenManager);
+        productApi = RetrofitClient.createApiWithAuthAndContext(ProductApi.class, tokenManager, requireContext());
+        imageApi = RetrofitClient.createApiWithAuthAndContext(ImageApi.class, tokenManager, requireContext());
 
         image = view.findViewById(R.id.image);
         pd = new ProgressDialog(getContext());

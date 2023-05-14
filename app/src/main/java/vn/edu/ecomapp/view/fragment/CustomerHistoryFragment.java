@@ -74,7 +74,7 @@ public class CustomerHistoryFragment extends Fragment {
         pd = new ProgressDialog(getContext());
         pd.setCanceledOnTouchOutside(false);
         orders = new ArrayList<>();
-        orderApi = RetrofitClient.createApiWithAuth(OrderApi.class, tokenManager) ;
+        orderApi = RetrofitClient.createApiWithAuthAndContext(OrderApi.class, tokenManager, requireContext());
         loadOrderRecyclerView();
 
     }

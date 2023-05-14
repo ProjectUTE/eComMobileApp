@@ -130,7 +130,7 @@ public class CustomerAccountFragment extends Fragment {
         changePasswordButton = view.findViewById(R.id.changePassword);
         editProfileButton = view.findViewById(R.id.editProfileButton);
         logoutButton = view.findViewById(R.id.logoutButton);
-        profileApi = RetrofitClient.createApiWithAuth(ProfileApi.class, tokenManager);
+        profileApi = RetrofitClient.createApiWithAuthAndContext(ProfileApi.class, tokenManager, requireContext());
 
 //         Handle click event
          changePasswordButton.setOnClickListener(view1 -> {
