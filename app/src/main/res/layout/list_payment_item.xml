@@ -10,7 +10,6 @@
     <ImageView
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:src="@drawable/coffee"
         android:id="@+id/image"
         android:layout_width="30dp"
         android:layout_height="30dp"/>

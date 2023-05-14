@@ -2,6 +2,7 @@ package vn.edu.ecomapp.view.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +12,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.dto.Product;
 import vn.edu.ecomapp.util.CurrencyFormat;
+import vn.edu.ecomapp.util.constants.UrlConstants;
 import vn.edu.ecomapp.view.adapter.listener.OnItemClickListener;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+    private final String TAG = ProductAdapter.class.getName();
    Context context;
    List<Product> products;
 
@@ -69,7 +74,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             super(itemView);
             tvProductId = itemView.findViewById(R.id.tvProductId);
             textViewName = itemView.findViewById(R.id.text_view_title);
-            imageViewPreview = itemView.findViewById(R.id.image_view_preview);
+            imageViewPreview = itemView.findViewById(R.id.imageView);
             textViewDescription = itemView.findViewById(R.id.text_view_description);
             viewDetailButton = itemView.findViewById(R.id.button_view_detail);
             tvCost = itemView.findViewById(R.id.price);
@@ -91,9 +96,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             textViewName.setText(product.getName());
         }
         public void setImage(Product product) {
-//            if(product == null)  return;
-//            if(product.getMainImage() == null || product.getMainImage().equals("")) return;
-//            Glide.with(context) .load(product.getMainImage()).into(imageViewPreview);
+            if(product == null)  return;
+            if(product.getMainImage() == null || product.getMainImage().equals("")) return;
+            String mainImageUrl = product.getMainImage();
+            if(mainImageUrl.contains(UrlConstants.BASE_URL_LOCAL))
+                mainImageUrl = mainImageUrl
+                        .replace(UrlConstants.BASE_URL_LOCAL, UrlConstants.BASE_URL)
+                        .replace(" ", "%20");
+            Log.d(TAG, mainImageUrl);
+            Glide.with(context) .load(mainImageUrl).into(imageViewPreview);
         }
         public void setDesc(Product product) {
             if(product == null)  return;

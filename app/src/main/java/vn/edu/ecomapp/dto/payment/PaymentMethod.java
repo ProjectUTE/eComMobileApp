@@ -1,4 +1,4 @@
-package vn.edu.ecomapp.dto;
+package vn.edu.ecomapp.dto.payment;
 
 public class PaymentMethod {
     String id, name;

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,9 +26,10 @@ import vn.edu.ecomapp.R;
 import vn.edu.ecomapp.api.OrderApi;
 import vn.edu.ecomapp.dto.Order;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
-import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.FragmentManager;
+import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.prefs.CustomerManager;
+import vn.edu.ecomapp.util.prefs.OrderManager;
 import vn.edu.ecomapp.util.prefs.TokenManager;
 import vn.edu.ecomapp.view.adapter.OrderAdapter;
 
@@ -38,6 +40,7 @@ public class CustomerHistoryFragment extends Fragment {
     OrderApi orderApi;
     TokenManager tokenManager;
     CustomerManager customerManager;
+    OrderManager orderManager;
     ProgressDialog pd;
 
     @Override
@@ -47,6 +50,8 @@ public class CustomerHistoryFragment extends Fragment {
                 .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
         customerManager = CustomerManager
                 .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_CUSTOMER, Context.MODE_PRIVATE));
+        orderManager = OrderManager
+                .getInstance(requireActivity().getSharedPreferences(PrefsConstants.DATA_ORDER, Context.MODE_PRIVATE));
 
     }
 
@@ -88,9 +93,14 @@ public class CustomerHistoryFragment extends Fragment {
                 orders = response.body();
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
                 orderRecyclerView.setLayoutManager(linearLayoutManager);
-                OrderAdapter orderAdapter = new OrderAdapter(getContext(), orders);
+                OrderAdapter orderAdapter = new OrderAdapter(requireContext(), orders);
                 orderRecyclerView.setAdapter(orderAdapter);
-                orderAdapter.setOnItemClickListener((position, view) -> FragmentManager.nextFragment(requireActivity(), new LineItemFragment()));
+                orderAdapter.setOnItemClickListener((position, view) -> {
+                    TextView tvOrderId = view.findViewById(R.id.orderIdValue);
+                    if(tvOrderId == null) return;
+                    orderManager.saveOrderId(tvOrderId.getText().toString());
+                    FragmentManager.nextFragment(requireActivity(), new LineItemFragment());
+                });
             }
 
             @Override

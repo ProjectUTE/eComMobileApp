@@ -12,6 +12,8 @@ public class LoginRequest {
         this.role = role;
     }
 
+    public LoginRequest() {}
+
     public int getRole() {
         return role;
     }

@@ -46,14 +46,12 @@ import vn.edu.ecomapp.dto.Product;
 import vn.edu.ecomapp.dto.Slide;
 import vn.edu.ecomapp.retrofit.RetrofitClient;
 import vn.edu.ecomapp.services.oauth2.GoogleAuthManager;
-import vn.edu.ecomapp.util.FragmentManager;
 import vn.edu.ecomapp.util.constants.PrefsConstants;
 import vn.edu.ecomapp.util.constants.UrlConstants;
 import vn.edu.ecomapp.util.prefs.CategoryManager;
 import vn.edu.ecomapp.util.prefs.CustomerManager;
 import vn.edu.ecomapp.util.prefs.TokenManager;
 import vn.edu.ecomapp.view.adapter.CategoryAdapter;
-import vn.edu.ecomapp.view.adapter.PopularProductAdapter;
 import vn.edu.ecomapp.view.adapter.SliderAdapter;
 import vn.edu.ecomapp.view.adapter.decorator.SpacesItemDecoration;
 
@@ -61,7 +59,7 @@ public class CustomerHomeFragment extends Fragment{
     List<Category> categories;
     List<Product> popularProducts;
     List<Slide> slides;
-    RecyclerView recyclerView, recyclerViewPopularProduct;
+    RecyclerView recyclerView;
     CategoryApi categoryApi;
     ProductApi productApi;
     SlideApi slideApi;
@@ -120,7 +118,6 @@ public class CustomerHomeFragment extends Fragment{
         initApi();
         loadSlides(view);
         loadCategories(view);
-        loadPopularProducts(view);
         getAccount();
         loadInfoAccount();
     }
@@ -153,7 +150,7 @@ public class CustomerHomeFragment extends Fragment{
                         customerManager.saveCustomer(profile);
 
                         displayName.setText(profile.getDisplayName());
-                        Glide.with(getContext())
+                        Glide.with(requireContext())
                             .load(profile.getAvatar())
                             .apply(RequestOptions.bitmapTransform(new RoundedCorners(1000)))
                             .into(avatar);
@@ -214,17 +211,6 @@ public class CustomerHomeFragment extends Fragment{
             sliderContainer.setCurrentItem(sliderContainer.getCurrentItem() + 1);
         }
     };
-
-
-    private void loadPopularProducts(View view) {
-        recyclerViewPopularProduct = view.findViewById(R.id.recycler_view_popular_product);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewPopularProduct.setLayoutManager(linearLayoutManager);
-        PopularProductAdapter popularProductAdapter = new PopularProductAdapter(getContext(), this.popularProducts);
-        recyclerViewPopularProduct.setAdapter(popularProductAdapter);
-        recyclerViewPopularProduct.addItemDecoration(new SpacesItemDecoration(20));
-        popularProductAdapter.setOnItemClickListener((position, view1) -> FragmentManager.nextFragment(requireActivity(), new ProductDetailFragment()));
-    }
 
 
     private void loadCategories(View view) {

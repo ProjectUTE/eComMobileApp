@@ -1,6 +1,7 @@
 package vn.edu.ecomapp.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,6 +41,7 @@ import vn.edu.ecomapp.view.adapter.ProductAdapter;
 import vn.edu.ecomapp.view.adapter.decorator.SpacesItemDecoration;
 
 public class CustomerFoodFragment  extends Fragment {
+    private final String TAG = CustomerFoodFragment.class.getName();
     List<Category> categories;
     List<Product> products;
     RecyclerView recyclerViewCategories, recyclerViewProducts;
@@ -49,8 +51,8 @@ public class CustomerFoodFragment  extends Fragment {
     ProductApi productApi;
     TokenManager tokenManager;
     String categoryId;
-
     BottomNavigationView bottomNavigationView;
+    ProgressDialog pd;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -70,6 +72,8 @@ public class CustomerFoodFragment  extends Fragment {
         categoryApi = RetrofitClient.createApiWithAuth(CategoryApi.class, tokenManager);
         productApi = RetrofitClient.createApiWithAuth(ProductApi.class, tokenManager);
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav);
+        pd = new ProgressDialog(getContext());
+        pd.setCanceledOnTouchOutside(false);
 
         loadRecyclerViewCategory(view);
         loadRecyclerViewProducts(view);
@@ -78,14 +82,18 @@ public class CustomerFoodFragment  extends Fragment {
     private void loadRecyclerViewProducts(View view) {
 
         categoryId = categoryManager.getCategoryId();
+        pd.setTitle("Load products");
+        pd.setMessage("Load products in progress, please wait");
+        pd.show();
         productApi.getProductByCategoryId(categoryId, "0").enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(@NonNull Call<List<Product>> call, @NonNull Response<List<Product>> response) {
+                pd.dismiss();
                 if (response.body() == null) {
-                    Log.d("TAG", "response null");
+                    Log.d(TAG, "response null");
                    return;
                 } else {
-                    Log.d("TAG", String.format("%d", response.body().size()));
+                    Log.d(TAG, Integer.toString(response.body().size()));
                 }
                 products = response.body();
                 recyclerViewProducts = view.findViewById(R.id.productRecyclerView);
@@ -105,16 +113,21 @@ public class CustomerFoodFragment  extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<Product>> call, @NonNull Throwable t) {
-                Log.d("Food", t.getMessage());
+                pd.dismiss();
+                Log.d(TAG, t.getMessage());
             }
         });
 
     }
 
     private void loadRecyclerViewCategory(View view) {
+        pd.setTitle("Load categories");
+        pd.setMessage("Load categories in progress, please wait");
+        pd.show();
         categoryApi.getCategories().enqueue(new Callback<List<Category>>() {
             @Override
             public void onResponse(@NonNull Call<List<Category>> call, @NonNull Response<List<Category>> response) {
+                pd.dismiss();
                 if(response.body() == null) return;
                 categories = response.body();
 
@@ -136,7 +149,8 @@ public class CustomerFoodFragment  extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<Category>> call, @NonNull Throwable t) {
-                Log.d("FoodFragment", t.getMessage());
+                pd.dismiss();
+                Log.d(TAG, t.getMessage());
             }
         });
 

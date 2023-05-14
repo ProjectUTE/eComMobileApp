@@ -3,6 +3,7 @@ package vn.edu.ecomapp.view.fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -56,7 +57,7 @@ import vn.edu.ecomapp.util.prefs.TokenManager;
 
 
 public class EditProfileFragment extends Fragment {
-
+    private final String TAG = EditProfileFragment.class.getName();
     TextView appBarTitle;
     ImageView backButton;
     ImageView ivAvatar;
@@ -69,6 +70,8 @@ public class EditProfileFragment extends Fragment {
     private static final int REQUEST_CODE = 1;
     ProfileApi profileApi;
     TokenManager tokenManager;
+
+    ProgressDialog pd;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -105,6 +108,8 @@ public class EditProfileFragment extends Fragment {
         btnUpdate = view.findViewById(R.id.update);
         backButton = view.findViewById(R.id.backButton);
         profileApi = RetrofitClient.createApiWithAuth(ProfileApi.class, tokenManager);
+        pd = new ProgressDialog(getContext());
+        pd.setCanceledOnTouchOutside(false);
 
         profile = customerManager.getCustomer();
         Objects.requireNonNull(tylPhonenumber.getEditText()).setText(profile.getPhonenumber());
@@ -142,19 +147,26 @@ public class EditProfileFragment extends Fragment {
         RequestBody rbAvatar = RequestBody.create(MediaType.parse(FORM_DATA), file);
         MultipartBody.Part partBodyAvatar = MultipartBody.Part.createFormData("avatar", file.getName(), rbAvatar);
 
-
+        pd.setTitle("Update profile");
+        pd.setMessage("Update profile in progress, please wait");
+        pd.show();
         profileApi.updateProfile(rbId, partBodyAvatar, rbDisplayName, rbPhonenumber, rbAddress)
                 .enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(@NonNull Call<ProfileResponse> call, @NonNull Response<ProfileResponse> response) {
-                assert response.body() != null;
-                Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                FragmentManager.backFragment(requireActivity());
+                pd.dismiss();
+                Log.d(TAG, "Success");
+                if(response.isSuccessful()) {
+                    Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    FragmentManager.backFragment(requireActivity());
+                }
+
             }
 
             @Override
             public void onFailure(@NonNull Call<ProfileResponse> call, @NonNull Throwable t) {
-                Log.d("UPDATE profile", t.getMessage());
+                pd.dismiss();
+                Log.d(TAG, t.getMessage());
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
