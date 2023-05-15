@@ -86,10 +86,10 @@ public class CustomerHomeFragment extends Fragment{
         if(prefs != null) {
             tokenManager = TokenManager.getInstance(prefs);
         }
-        slideApi = RetrofitClient.createApiWithAuth(SlideApi.class, tokenManager);
+        slideApi = RetrofitClient.createApiWithAuthAndContext(SlideApi.class, tokenManager, requireContext());
         categoryApi = RetrofitClient.createApiWithAuth(CategoryApi.class, tokenManager);
         productApi = RetrofitClient.getRetrofit().create(ProductApi.class);
-        profileApi= RetrofitClient.createApiWithAuth(ProfileApi.class, tokenManager);
+        profileApi= RetrofitClient.createApiWithAuthAndContext(ProfileApi.class, tokenManager, requireContext());
 
     }
 

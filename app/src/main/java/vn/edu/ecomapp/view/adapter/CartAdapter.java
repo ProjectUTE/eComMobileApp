@@ -47,7 +47,7 @@ public class CartAdapter  extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
 
         TokenManager tokenManager = TokenManager
                 .getInstance(context.getSharedPreferences(PrefsConstants.DATA_ACCESS_TOKEN, Context.MODE_PRIVATE));
-        productApi = RetrofitClient.createApiWithAuth(ProductApi.class, tokenManager);
+        productApi = RetrofitClient.createApiWithAuthAndContext(ProductApi.class, tokenManager, context);
     }
 
     public Context getContext() {

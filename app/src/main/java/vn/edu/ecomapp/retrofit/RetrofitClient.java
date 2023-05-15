@@ -1,5 +1,7 @@
 package vn.edu.ecomapp.retrofit;
 
+import android.content.Context;
+
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -75,7 +77,7 @@ public class RetrofitClient {
         return newRetrofit.create(service);
     }
 
-    public static <T> T createApiWithAuthAndContext(Class<T> service, final TokenManager tokenManager, Objects context) {
+    public static <T> T createApiWithAuthAndContext(Class<T> service, final TokenManager tokenManager, Context context) {
         OkHttpClient newClient = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             newClient = client.newBuilder().addInterceptor(chain -> {

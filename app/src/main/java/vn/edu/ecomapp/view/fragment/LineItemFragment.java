@@ -107,7 +107,7 @@ public class LineItemFragment extends Fragment {
         initializeComponents(view);
         pd = new ProgressDialog(getContext());
         pd.setCanceledOnTouchOutside(false);
-        lineItemApi = RetrofitClient.createApiWithAuth(LineItemApi.class, tokenManager);
+        lineItemApi = RetrofitClient.createApiWithAuthAndContext(LineItemApi.class, tokenManager, requireContext());
         appBarTitle = view.findViewById(R.id.appBarTitle);
         appBarTitle.setText("Order detail");
         backButton = view.findViewById(R.id.backButton);

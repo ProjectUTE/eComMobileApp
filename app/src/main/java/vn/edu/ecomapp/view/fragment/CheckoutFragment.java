@@ -113,7 +113,7 @@ public class CheckoutFragment extends Fragment {
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNav);
         badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.cart);
         cartId = customerManager.getCustomer().getCustomerId();
-        checkoutApi = RetrofitClient.createApiWithAuth(CheckoutApi.class, tokenManager);
+        checkoutApi = RetrofitClient.createApiWithAuthAndContext(CheckoutApi.class, tokenManager, requireContext());
         builder = new AlertDialog.Builder(getContext());
         pd = new ProgressDialog(getContext());
         pd.setCanceledOnTouchOutside(false);
