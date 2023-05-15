@@ -1,6 +1,7 @@
 package vn.edu.ecomapp.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,6 +43,8 @@ public class SelectPaymentFragment extends Fragment {
     TokenManager tokenManager;
     PaymentMethodApi methodApi;
 
+    ProgressDialog pd;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -68,10 +72,16 @@ public class SelectPaymentFragment extends Fragment {
         rcvPayment = view.findViewById(R.id.rcvPayment);
         backButton = view.findViewById(R.id.backButton);
         backButton.setOnClickListener(view1 -> FragmentManager.backFragment(requireActivity()));
+        pd = new ProgressDialog(getContext());
+        pd.setCanceledOnTouchOutside(false);
 
+        pd.setTitle("Select Payment Method");
+        pd.setMessage("Loading data, please wait!!");
+        pd.show();
         methodApi.getAllPaymentMethods().enqueue(new Callback<List<PaymentMethodResponse>>() {
             @Override
             public void onResponse(@NonNull Call<List<PaymentMethodResponse>> call, @NonNull Response<List<PaymentMethodResponse>> response) {
+                pd.dismiss();
                 if(response.isSuccessful()) {
                     if (response.body() == null) return;
                     paymentMethods = response.body();
@@ -90,6 +100,8 @@ public class SelectPaymentFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<PaymentMethodResponse>> call, @NonNull Throwable t) {
+                pd.dismiss();
+                Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.d(TAG, t.getMessage());
             }
         });
